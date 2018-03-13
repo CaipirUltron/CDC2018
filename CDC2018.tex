@@ -1,0 +1,124 @@
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if
+                                                          % you want to use the \thanks command
+
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+ %The following packages can be found on http:\\www.ctan.org
+\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+\let\proof\relax
+\let\endproof\relax
+\usepackage{amsthm}
+\usepackage{color}
+%\usepackage{mathtools}
+\usepackage{tabularx} %used to chose the widht of tables
+\usepackage{multirow}
+\usepackage{epstopdf}
+\let\labelindent\relax
+\usepackage[inline]{enumitem}
+
+%\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+%
+\theoremstyle{plain}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newcommand{\sref}[1]{Section~\ref{#1}}
+\newcommand{\fref}[1]{Fig.~\ref{#1}}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+%\renewcommand{\qedsymbol}{}
+\newcommand{\rev}[1]{{\color{red}#1}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\aketext}[2]{\norm{#1}^{#2}sgn(#1)}
+\newcommand{\aket}[1]{\lfloor #1 \rceil}
+
+%-------------------- \reallywidehat command ----------------
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}% 
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+ %------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\LARGE \bf Super-Twisting Control with Quaternion Output Feedback for a 3-DOF Inertial Stabilization Platform}
+
+\author{Matheus F. Reis, Jo\~ao C. Monteiro, Ramon R. Costa, Antonio C. Leite % <-this % stops a space
+%\thanks{*This work was supported by Repsol Sinopec Brasil under the ANP-Brazil R\&D program (project reference number 20005-5)}% <-this % stops a space
+%
+\thanks{The authors are with the Electrical Engineering Department of COPPE/UFRJ and PUC-Rio, Rio de Janeiro, Brazil
+{\tt\small matheus.ferreira.reis@gmail.com},
+{\tt\small \{jcmonteiro, ramon\}@coep.ufrj.br},
+{\tt\small antonio@ele.puc-rio.br}.}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%\subsection{Some Common Mistakes}
+%\begin{itemize}
+%\item The word ÒdataÓ is plural, not singular.
+%\item The subscript for the permeability of vacuum ?0, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ÒoÓ.
+%\item In American English, commas, semi-/colons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
+%\item A graph within a graph is an ÒinsetÓ, not an ÒinsertÓ. The word alternatively is preferred to the word ÒalternatelyÓ (unless you really mean something that alternates).
+%\item Do not use the word ÒessentiallyÓ to mean ÒapproximatelyÓ or ÒeffectivelyÓ.
+%\item In your paper title, if the words Òthat usesÓ can accurately replace the word ÒusingÓ, capitalize the ÒuÓ; if not, keep using lower-cased.
+%\item Be aware of the different meanings of the homophones ÒaffectÓ and ÒeffectÓ, ÒcomplementÓ and ÒcomplimentÓ, ÒdiscreetÓ and ÒdiscreteÓ, ÒprincipalÓ and ÒprincipleÓ.
+%\item Do not confuse ÒimplyÓ and ÒinferÓ.
+%\item The prefix ÒnonÓ is not a word; it should be joined to the word it modifies, usually without a hyphen.
+%\item There is no period after the ÒetÓ in the Latin abbreviation Òet al.Ó.
+%\item The abbreviation Òi.e.Ó means Òthat isÓ, and the abbreviation Òe.g.Ó means Òfor exampleÓ.
+%\end{itemize}
+
+\input{abstract}
+\input{introduction}
+\input{modeling}
+\input{control}
+\input{simulations}
+\input{conclusion}
+
+%A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications and extensions.
+
+\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section*{APPENDIX}
+%
+%\section*{ACKNOWLEDGMENT}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{IEEEtran}
+\bibliography{CDC2018}
+%\bibliography{thesis}
+
+\end{document} 
