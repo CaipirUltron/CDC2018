@@ -10,14 +10,15 @@ In this section, a procedure for deriving the kinematic and dynamic models of an
 
 This section presents the notations and conventions used in this work. Let $\mathbb{N} = \{0,1,2,\dots\}$ denote the set of \textit{natural numbers} and define $\mathbb{\bar{N}} = \{ \bar{0}\,,\bar{1}\,, \bar{2}\,, \hdots \}$. Unless otherwise stated, $i, j, k \in \mathbb{N} \cup \mathbb{\bar{N}} \cup \{s,c\}$.
 %
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1\columnwidth]{figs/ship_conventions.pdf}
-    \caption{Frame conventions for a 3-DOF ISP system installed on a vessel.}
-    \label{fig:HEADS_convention}
-\end{figure}
-
-Considering \fref{fig:HEADS_convention}, define the following:% coordinate frames, matrices, vectors and scalars:
+%\begin{figure}[ht]
+    %\centering
+    %\includegraphics[width=1\columnwidth]{figs/ship_conventions.pdf}
+    %\caption{Frame conventions for a 3-DOF ISP system installed on a vessel.}
+    %\label{fig:HEADS_convention}
+%\end{figure}
+%
+Define the following:
+% coordinate frames, matrices, vectors and scalars:
 %
 \begin{itemize}
 \item $\mathbf{E}_{w}$: world frame, arbitrarily located;
@@ -61,7 +62,8 @@ Considering \fref{fig:HEADS_convention}, define the following:% coordinate frame
 %\end{array}\right]$: augmented inertia matrix of body $i$;
 %of body $i$ written in $\mathbf{E}_{i} (i \in \mathbb{N}_1 \cup \{b\})$.
 %
-\item $\widehat{*}$: $\mathbb{R}^3 \rightarrow so(3)$ cross-product operator;
+%\item $\widehat{v}$: $\mathbb{R}^3 \rightarrow so(3)$ cross-product operator;
+\item $\mathbf{S}(v) : \mathbb{R}^3 \mapsto \mathrm{so}(3)$ cross product operator;
 %
 \item $\aket{v}^{\alpha}$: $\mathbb{R}^n \rightarrow \mathbb{R}^n$, where its elements are given by $\aketext{v_i}{\alpha}$, with $v_i \in \mathbb{R}$ ($i = 1,...,n$) being the elements of $v \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$;
 %
@@ -104,9 +106,9 @@ Considering \fref{fig:HEADS_convention}, define the following:% coordinate frame
 %
 %In this work, if the superscript symbol is omitted, the vector is represented in the inertial frame, $\mathbf{E}_0$.
 %
-Let body $0$ be the vessel and bodies $1,2,3$ be the ISP gimbals.
+Let body $0$ be the moving base and bodies $1,2,3$ be the ISP gimbals.
 %
-Also, if a superscript is omitted, the vector is written in $\mathbf{E}_w$.
+Also, if a superscript is omitted, the vector is written in world frame $\mathbf{E}_w$ coordinates.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quaternion-Based Kinematics}
@@ -143,14 +145,14 @@ Quaternions also form an algebraic {\it group} with respect to {\it multiplicati
 Given two quaternions $Q_1=\{\eta_1,\epsilon_1\}$ and $Q_2=\{\eta_2,\epsilon_2\}$, their multiplication follow the rules established by definition \eqref{eq:def_quaternion}, which results in:
 %
 \begin{align}
-Q_1\circ Q_2 = \{\eta_1\eta_2 - \epsilon_1^\mathsf{T}\epsilon_2 ,\, \eta_1\epsilon_2 + \eta_2\epsilon_1 + \epsilon_1 \times \epsilon_2 \} \,.
+Q_1\cdot Q_2 = \{\eta_1\eta_2 - \epsilon_1^\mathsf{T}\epsilon_2 ,\, \eta_1\epsilon_2 + \eta_2\epsilon_1 + \epsilon_1 \times \epsilon_2 \} \,.
 \label{eq:quaternion_product}
 \end{align}
 %
 Quaternion multiplication can also be performed as a linear transformation in $\mathbb{R}^4$, by:
 %
 \begin{align}
-\overline{Q_1 \circ Q_2} &= \mathbf{H}_+(Q_1) \, \overline{Q_2} \,, \\
+\overline{Q_1 \cdot Q_2} &= \mathbf{H}_+(Q_1) \, \overline{Q_2} \,, \\
 &= \mathbf{H}_-(Q_2) \, \overline{Q_1} \,,
 \label{eq:multipl_Hamilton}
 \end{align}
@@ -159,20 +161,32 @@ where $\mathbf{H}_+$, $\mathbf{H}_-$ are {\it Hamilton operators} defined by:
 %
 \begin{align}
 \mathbf{H}_+(Q) &= \left[ \begin{array}{cc}
-\eta & -\epsilon^\mathsf{T} \\
-\epsilon & \eta \, \mathbf{I}_3 + \widehat{\epsilon}
-\end{array} \right] \,, \\
+\overline{Q} & \mathbf{h}_+(Q)
+%\epsilon & \eta \, \mathbf{I}_3 + \widehat{\epsilon}
+\end{array} \right], \quad
+%
+\mathbf{h}_+(Q) = 
+\left[ \begin{array}{cc}
+-\epsilon^\mathsf{T} \\
+\eta \, \mathbf{I}_3 + \widehat{\epsilon}
+\end{array} \right] \\
+%
 \mathbf{H}_-(Q) &= \left[ \begin{array}{cc}
-\eta & -\epsilon^\mathsf{T} \\
-\epsilon & \eta \, \mathbf{I}_3 - \widehat{\epsilon}
-\end{array} \right] \,.
+\overline{Q} & \mathbf{h}_-(Q)
+\end{array} \right], \quad
+%
+\mathbf{h}_-(Q) = 
+\left[ \begin{array}{cc}
+-\epsilon^\mathsf{T} \\
+\eta \, \mathbf{I}_3 - \widehat{\epsilon}
+\end{array} \right]
 \label{eq:Hamilton_op}
 \end{align}
 
 The square of the quaternion \textit{norm} is defined as the \textit{scalar}:
 %
 \begin{align}
-\norm{Q}^2 = Q \circ Q^* = \{ \eta^2 + \epsilon^\mathsf{T} \epsilon , 0 \} \,,
+\norm{Q}^2 = Q \cdot Q^* = \{ \eta^2 + \epsilon^\mathsf{T} \epsilon , 0 \} \,,
 \end{align}
 %
 and its \textit{inverse} is the quaternion $Q^{-1}$ such that $Q \,\circ\, Q^{-1} = \{1,0\}$, the {\it unitary} quaternion.
@@ -194,7 +208,7 @@ Let $r_0, r_1, ... , r_n \in \mathbb{H}^*$ be the $n$ absolute rotations between
 Then, since the unit quaternions form a group with respect to multiplication, then:
 %
 \begin{align}
-r_n = r_1 \circ r^1_2 \circ ... \circ r^{n-1}_n \in \mathbb{H}^* \,.
+r_n = r_1 \cdot r^1_2 \cdot ... \cdot r^{n-1}_n \in \mathbb{H}^* \,.
 \end{align}
 
 Now, define the set of \textit{pure} quaternions $\mathbb{H}_p = \{ v \in \mathbb{H}: \mathsf{Re}(v) = 0 \}$.
@@ -208,7 +222,7 @@ Besides, note that the following holds for $v,w \in \mathbb{H}_p$:
 %\mathsf{Im}(v) \times \mathsf{Im}(w)
 %\end{array} \right] \,.
 %
-v \circ w = \{ -\mathsf{Im}(v)^\mathsf{T} \mathsf{Im}(w) ,\,\, \mathsf{Im}(v) \times \mathsf{Im}(w) \} \,.
+v \cdot w = \{ -\mathsf{Im}(v)^\mathsf{T} \mathsf{Im}(w) ,\,\, \mathsf{Im}(v) \times \mathsf{Im}(w) \} \,.
 %
 %v \circ w = \{ -v^\mathbf{T} w ,\,\, v \times w \} \,.
 \end{align}
@@ -220,7 +234,7 @@ Let $v^i$ and $v^j \!\in\! \mathbb{H}_p$ be representations for a vector $\vec{v
 Then, the following relation is valid:
 %
 \begin{align}
-v^i = (r^i_j) \circ v^j \circ (r^i_j)^* = Ad_{r^i_j} \left[ v^j \right] \,,
+v^i = (r^i_j) \cdot v^j \cdot (r^i_j)^* = Ad_{r^i_j} \left[ v^j \right] \,,
 \end{align}
 %
 where $Ad_{r^i_j}[*]$ is the adjoint {\it operator}.
@@ -392,45 +406,56 @@ The velocity/acceleration twists of the camera are computed by $V^c_{c} = Ad_{g_
 The matrices in \eqref{eq:upwards_prop1}, \eqref{eq:upwards_prop2} are given by:
 %
 \begin{alignat*}{3}
-&\Phi_{i+1,i} &&= \mat{
-\,\, \mathbf{I}_{3} \!\!&\!\! -\hat{p}^{i}_{i,i+1} \\
+&\Phi_{i+1,i} &=& \mat{
+\mathbf{I}_{3} \!\!&\!\! -\mathbf{S}(p^{i}_{i,i+1}) \\
 0     \!\!&\!\! \mathbf{I}_{3}
-},
+}, \quad \quad
 %
-\quad \,\,\,\, \Phi^{-1}_{i+1,i} &&= \mat{
-\,\, \mathbf{I}_{3} \!\!&\!\! \hat{p}^{i}_{i,i+1} \\
+\Phi^{-1}_{i+1,i} &=& \mat{
+\,\, \mathbf{I}_{3} \!\!&\!\! \mathbf{S}(p^{i}_{i,i+1}) \\
 0     \!\!&\!\! \mathbf{I}_{3}
 }, \\
 %
-& H^\mathbf{T}_{i+1} &&= \mat{ 
-0^\mathbf{T} \!\!\!&\!\!\! ( h^{i}_{i+1} )^\mathbf{T}
-} ,
+&H^\mathsf{T}_{i+1} &=& \mat{ 
+0^\mathsf{T} \!\!\!&\!\!\! ( h^{i}_{i+1} )^\mathsf{T}
+} \quad \,\,\,\,, \quad \quad
 %
-%A_{i+1} &&= \mat{
-%(\hat{v}^{i}_{0i} + \reallywidehat{\hat{\omega}^{i}_{0i} \, p^{i}_{i,i+1}}) \, h^{i}_{i+1} \\
-%\hat{\omega}^{i}_{0i} \, h^{i}_{i+1} }.
+%R_{i\,,i+1} &=& \exp(\mathbf{S}(h^{i}_{i+1}) \, q_{i+1})\,, \\
 %
-\quad \quad \Omega_{i,i+1} &&= \mat{ 
+\Omega_{i,i+1} &=& \mat{ 
 R_{i,i+1} \!\!\!&\!\!\! 0         \\ 
 0          \!\!\!&\!\!\! R_{i,i+1} 
-}, \\
+}\,\,\,\,,\\
 %
-%R_{i\,,i+1} &&= \exp(\hat{h}^{i}_{i+1} \, q_{i+1})\,, \\
-%
-&
-%\Omega_{i,i+1} &&= \mat{ 
-%R_{i,i+1} \!\!\!&\!\!\! 0         \\ 
-%0          \!\!\!&\!\!\! R_{i,i+1} 
-%},
-%
-A_{i+1} &&= \mat{
-(\hat{v}^{i}_{0i} + \reallywidehat{\hat{\omega}^{i}_{0i} \, p^{i}_{i,i+1}}) \, h^{i}_{i+1} \\
-\hat{\omega}^{i}_{0i} \, h^{i}_{i+1} } \,,
+&A_{i+1} &=& \mat{
+\mathbf{S}(v^{i}_{0i} + \mathbf{S}(\omega^{i}_{0i}) \, p^{i}_{i,i+1}) \, h^{i}_{i+1} \\
+\mathbf{S}(\omega^{i}_{0i}) \, h^{i}_{i+1} }
 \end{alignat*}
 %
-%where $\exp{(.)} \in \mathbb{R}^{3\times3}$ is the exponential map for the angle-axis representation.
-%
-%where the parameters $p^{i}_{i,i+1}$ and $h^{i}_{i+1}$ compose $\Pi_{kin}$ in \eqref{eq:NE_algorithm}.
+%\begin{alignat*}{3}
+%&\Phi_{i+1,i} &&= \mat{
+%\,\, \mathbf{I}_{3} \!\!&\!\! -\hat{p}^{i}_{i,i+1} \\
+%0     \!\!&\!\! \mathbf{I}_{3}
+%},
+%%
+%\quad \,\,\,\, \Phi^{-1}_{i+1,i} &&= \mat{
+%\,\, \mathbf{I}_{3} \!\!&\!\! \hat{p}^{i}_{i,i+1} \\
+%0     \!\!&\!\! \mathbf{I}_{3}
+%}, \\
+%%
+%& H^\mathbf{T}_{i+1} &&= \mat{ 
+%0^\mathbf{T} \!\!\!&\!\!\! ( h^{i}_{i+1} )^\mathbf{T}
+%} ,
+%%
+%\quad \quad \Omega_{i,i+1} &&= \mat{ 
+%R_{i,i+1} \!\!\!&\!\!\! 0         \\ 
+%0          \!\!\!&\!\!\! R_{i,i+1} 
+%}, \\
+%%
+%&A_{i+1} &&= \mat{
+%(\hat{v}^{i}_{0i} + \reallywidehat{\hat{\omega}^{i}_{0i} \, p^{i}_{i,i+1}}) \, h^{i}_{i+1} \\
+%\hat{\omega}^{i}_{0i} \, h^{i}_{i+1} } \,,
+%\end{alignat*}
 %
 where the rotation matrices $R_{i,i+1}$ are computed from 
 $r_{i,i+1} = \left\{ cos\left(\frac{1}{2} q_{i+1}\right), h^i_{i+1}\,sin\left(\frac{1}{2} q_{i+1}\right) \right\} \in \mathbb{H}^*$
@@ -486,14 +511,18 @@ These kinematic relations can be used to describe the dependance among vehicle, 
 \begin{align}
 r_{c} &= r_{0} \circ r^0_{c}(q,\Pi_g) \,, \label{eq:camera_orientation1} \\
 \omega^{c}_{c} &= J^{c}_{0c}(q,\Pi_g) \, \dot{q} + \omega^{c}_{0} \,, \label{eq:camera_orientation2} \\
-\dot{\omega}^{c}_{c} &= J^{c}_{0c}(q,\Pi_g) \, \dot{q} + \dot{J}^{c}_{0c}(q,\Pi_g) \, \dot{q} + \dot{\omega}^{c}_{0} \,. \label{eq:camera_orientation3}
+\dot{\omega}^{c}_{c} &= J^{c}_{0c}(q,\Pi_g) \, \ddot{q} + \dot{J}^{c}_{0c}(q,\dot{q},\Pi_g) \, \dot{q} + \dot{\omega}^{c}_{0} \,. \label{eq:camera_orientation3}
 \end{align}
+
+An important algebraic property is the \textit{linearity} of \eqref{eq:camera_orientation2} with respect to the \textit{geometric} parameters:
 %
-%where
-%$J^c_{bc}(q) = \mat{R^\mathsf{T}_{bi} \, h^b_1 \!\!&\!\! R^\mathsf{T}_{1i} \, h^1_2 \!\!&\!\! 
-%R^\mathsf{T}_{2i} \, h^2_3}$
-%and
-%$R_{bc} = \Pi^3_{i=1} \exp(\widehat{h}^{i-1}_{i} q_{i})$.
+\begin{equation}
+\omega^{c}_{c} = W_\omega(q,\dot{q},\omega^{c}_{0}) \, \Pi_{g} \,.
+\label{eq:kin_regressor}
+\end{equation}
+%
+where $W_\omega \in \mathbb{R}^{3\times N_g}$ is a \textit{kinematic regressor}.
+%and $N_g$ is the number of geometric parameters.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dynamic Equations for Vehicle Manipulator Systems}
@@ -516,6 +545,15 @@ $C_{qq}(q,\dot{q},V^{0}_{0},\Pi_g,\Pi_d) \in \mathbb{R}^{3 \times 3}$ and $C_{qV
 %
 %due to joint motions and frame $\mathbf{E}_{k}$ motion, 
 and $G_{q}(q,r_{0},\Pi_g,\Pi_d) \in \mathbb{R}^{3}$ is the gravity vector.
+
+It is worth mentioning that, in a similar way than in \eqref{eq:kin_regressor}, \eqref{eq:HEADS_dynamics} is also \textit{linear} with respect to the \textit{dynamic} parameters:
+%
+\begin{equation}
+Y_q( q,\dot{q}, \ddot{q}, r_{0}, V^{0}_{0}, \dot{V}^{0}_{0}, g, \Pi_g) \, \Pi_{d} = \tau_q \,,
+\label{eq:dyn_regressor}
+\end{equation}
+%
+where $Y_q \in \mathbb{R}^{3\times N_d}$ is a \textit{dynamic regressor}.
 
 It is well known that the \textit{Newton Euler} method is a computationally efficient algorithm that can be used to numerically solve the \textit{inverse dynamics} problem for \eqref{eq:HEADS_dynamics}.
 %

@@ -1,16 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Super-Twisting Control}
 
-\subsection{Super-Twisting Control with Full State Feedback}
-\label{sec:STC_state_feedback}
-
 In this section, a novel second-order sliding mode (SOSM) controller based on super-twisting algorithm (STC) will be developed for the stabilization and tracking of the LOS.
+%
+Two cases are considered: STC with full state feedback and STC with output feedback.
 
 Consider \eqref{eq:HEADS_dynamics}, rewritten here as:
 %
 \begin{equation}
 M_{qq} \, \ddot{q} + \tau_d = \tau_q \,,
-\label{eq:inner_model}
+\label{eq:dynamic_model}
 \end{equation}
 %
 where $\tau_q \in \mathbb{R}^{3}$ is the vector of generalized forces acting on the robot joints, collocated with $\dot{q}$ and $\tau_d = C_{qq} \, \dot{q} + G_{q} + M_{qV} \, \dot{V}^{b}_{0b} + C_{qV} \, V^{b}_{0b} \in \mathbb{R}^{3}$ is a disturbance vector.
@@ -21,71 +20,28 @@ where $\tau_q \in \mathbb{R}^{3}$ is the vector of generalized forces acting on 
 %%
 %and $G^{b}_{q}(q,\eta_{b_2}) \in \mathbb{R}^{n}$ is the gravity vector.
 %
-The dynamic model \eqref{eq:inner_model} can be rewritten as:
+The dynamic model \eqref{eq:dynamic_model} can be rewritten as:
 %
 \begin{align}
 \dot{x}_1 &= x_2 \,, \nonumber \\
 \dot{x}_2 &= M^{-1}_{qq}(x_1,\Pi)\,\tau_q + x_3(x_1,x_2,\Pi,t) \,,
-\label{eq:SS_inner_model}
+\label{eq:inner_model}
 \end{align}
 %
 where the states $x_1 = q$, $x_2 = \dot{q}$ are the ISP joint angles and velocities and $x_3 = -M^{-1}_{qq}(x_1) \,\tau_d$ is a state-dependent disturbance.
 
 \begin{remark}
-Note that, under assumption of torque control $u(t) = \tau_q$, state-space model \eqref{eq:SS_inner_model} is a double-integrator with a nonlinear high-frequency gain and a matched disturbance $x_3 \in \mathbb{R}^{3}$.
+Note that, under assumption of torque control $u(t) = \tau_q$, state-space model \eqref{eq:inner_model} is a double-integrator with a nonlinear high-frequency gain and a matched disturbance $x_3 \in \mathbb{R}^{3}$.
 \end{remark}
 
-First, define the following \textit{sliding surface}:
-%
-\begin{equation}
-s_x = x_2 - \int^t_0{w(\tau)} \, d\tau\,. 
-\label{eq:sx_sliding}
-\end{equation}
-%
-where $w(\tau) \in \mathbb{R}^3$ is an arbitrary signal.
-%
-Due to \eqref{eq:SS_inner_model}, the dynamics of the sliding variable $s_x$ is given by:
-%
-\begin{equation}
-\dot{s}_x = \dot{x}_2 - w(t) = M^{-1}_{qq} \, u + x_3 - w(t)\,.
-\label{eq:dsx_sliding}
-\end{equation}
-
-The {\it super-twisting control law} is defined as:
+Now, in a similar way than in \eqref{eq:inner_model}, \eqref{eq:quaternion_propagation} and \eqref{eq:camera_orientation3} can be rewritten as:
 %
 \begin{align}
-S_t(s,A,B) &= A \aket{s}^{1/2} + B \int^{t}_{0}{sgn(s) d\tau} \,, 
-\label{eq:st_ctrl}
-\end{align}
-%
-where matrices $A, B > 0$.
-%
-Using the inner control law
-%
-\begin{align}
-u(t) &= M_{qq}(x_1,\Pi) \, \left[ w(t) - S_t(s_x,\Lambda_1,\Lambda_2) \right] \,,
-\label{eq:u_sliding}
-\end{align}
-%
-where $\Lambda_1,\Lambda_2 > 0$, \eqref{eq:dsx_sliding} becomes:
-%
-\begin{align}
-\dot{s}_x &= - \Lambda_1 \, \aket{s_x}^{1/2} + w_x \,, \nonumber \\
-\dot{w}_x &= - \Lambda_2 \, \aket{s_x}^{0} + \dot{x}_3 \,,
-\label{eq:STC_system}
-\end{align}
-%
-which is identified as the STA and is finite-time stable for $\norm{\dot{x}_3} < L_x$.
-%
-According to \cite{Moreno2012}, the STA guarantees SOSM in finite-time, which means that after a time $t>T_1>0$, $s_x = \dot{s}_x = 0$. Therefore, $\dot{x}_2 = w(t) \,\, \forall t>T_1$, even in the presence of the bounded disturbance $x_3$.
-
-Now, in a similar way than in \eqref{eq:SS_inner_model}, \eqref{eq:quaternion_propagation} and \eqref{eq:camera_orientation3} can be rewritten as:
-%
-\begin{align}
-\dot{y}_{1} &= \frac{1}{2} \, \left[ \begin{array}{cc}
-- y_{12}^\mathsf{T} \\
-y_{11}\,\mathbf{I}_3 + \widehat{y}_{12}
-\end{array} \right] \, y_2 \,, \\
+\dot{y}_{1} &= \frac{1}{2} \, \mathbf{h}_+(y_1) \, y_2 \,, \nonumber \\
+%\mathbf{h}_+(y_1) = \left[ \begin{array}{cc}
+%- y_{12}^\mathsf{T} \\
+%y_{11}\,\mathbf{I}_3 + \widehat{y}_{12}
+%\end{array} \right] 
 %\dot{y}_{11} &= -0.5 \, y^\mathsf{T}_{12} \, y_{2}  \,, \nonumber \\
 %\dot{y}_{12} &= 0.5 \, ( y_{11} \, \mathbf{I}_{3} + \widehat{y}_{12} ) \, y_{2} \,, \nonumber \\
 \dot{y}_2 &= J^{c}_{0c}(x_1,\Pi_g) \, \dot{x}_2 + y_3(x_1,x_2,\Pi_g,t) \,.
@@ -97,10 +53,13 @@ where the state $y^\mathsf{T}_1 = \overline{r}^\mathsf{T}_c = \mat{\,\,y_{11} \,
 State $y_2 = \omega^c_{c}$ is the camera angular velocity, while $y_3 = \dot{J}^c_{0c}\,\dot{q} + \dot{\omega}^c_{0}$ is another state-dependent disturbance.
 %
 \begin{remark}
+\label{remark2}
 Note that the state-space model \eqref{eq:outer_model} is a double integrator with a nonlinear high-frequency gain and a matched disturbance $y_3$ with respect to a control input $\dot{x}_2$.
 \end{remark}
 
 This structure strongly suggests the use of a \textit{cascade controller} for both stabilization and tracking. 
+An inner controller acts on $u(t)$ in \eqref{eq:inner_model} to control $\dot{x}_2$, providing dynamic stabilization 
+for the system, while an outer tracking controller acts on $\dot{x}_2$ in \eqref{eq:outer_model}, controlling the camera orientation $y_1$.
 %Inspired by the system dynamics and by the works of \cite{Mao2017,Chalanga2016}, the following control scheme is proposed.
 
 Given an orientation reference $r_{c_d}(t) \in \mathbb{H}^*$ for the camera, it can be represented in vector form by $\overline{r}^\mathsf{T}_{c_d}(t) = y^\mathsf{T}_{1_d}(t) = \mat{\,\,y_{11_d}(t) \,\,\, y^\mathsf{T}_{12_d}(t) \,\,}$. 
@@ -110,166 +69,180 @@ The angular velocity of the camera is also given as $\omega^c_{c_d}(t) = y_{2_d}
 The quaternion and angular velocity errors can be defined as:
 %
 \begin{align}
-e_{c} &= r_{c_d}(t) \circ r^*_c \,, 
+e_{c} &= r_{c_d}(t) \cdot r^*_c \,, 
 \label{eq:quaternion_errors1} \\
 e_{\omega} &= y_{2_d}(t) - y_{2} \,.
 \label{eq:quaternion_errors2}
 \end{align}
-
-Note that when $r_{c} = r_{c_d}(t)$, the orientation error \eqref{eq:quaternion_errors1} is zero.
-%The state errors are defined as:
-%%
-%\begin{align}
-%e_{c} &= y_{11} \, y_{12_d}(t) - y_{11_d}(t) \, y_{12} -\hat{y}_{12_d}(t) \, y_{12} \,, 
-%\label{eq:quaternion_errors1} \\
-%e_{\omega} &= y_{2_d}(t) - y_{2} \,.
-%\label{eq:quaternion_errors2}
-%\end{align}
 %
-Define another \textit{sliding surface} as
+Note that when $r_{c} = r_{c_d}(t)$, the orientation error \eqref{eq:quaternion_errors1} is zero.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Super-Twisting Control with Full State Feedback}
+\label{sec:STC_state_feedback}
+
+Suppose that both ISP states $x_1$ and $x_2$ are available.
+%
+The following theorem provides an stability analysis for the proposed sliding mode cascade controller.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[{\it Cascade STC with Full State Feedback}]
+
+Let \eqref{eq:inner_model} and \eqref{eq:outer_model} be the system dynamic and kinematic models.
+%
+Assume the following:
+%
+\begin{enumerate}[label=(\roman*)]
+%
+\item the ISP joint velocities and accelerations are uniformly norm-bounded; \label{assump:1}
+%there are $\rho_1,\,\rho_2 > 0$ such that: $\norm{\dot{q}} \leq \rho_1$, $\norm{\ddot{q}} \leq \rho_2$; 
+%
+\item 
+the zero, first and second order time-derivatives of the vehicle velocity twists are uniformly norm-bounded; \label{assump:2}
+%there are $\epsilon_1,\,\epsilon_2 > 0$ such that: $\norm{V^b_{0b}} \leq \epsilon_1$, $\norm{V^b_{0b}} \leq \epsilon_2$.
+%
+\end{enumerate}
+
+Defining the {\it super-twisting control} expression:
+%
+\begin{align}
+S_t(s,A,B) &= A \aket{s}^{1/2} + B \int^{t}_{0}{sgn(s) d\tau} \,, \nonumber
+\end{align}
+%
+with matrices $A, B > 0$, the super-twisting-based controllers can be defined as follows.
+%
+The outer sliding surface is:
+%
+\begin{align}
+s_{y} &= e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) \,, \quad K_{c} > 0 \,,
+\label{eq:quaternion_sliding_surface}
+\end{align}
+%
+where $K_c > 0$. The corresponding outer control law is:
+%
+\begin{align}
+w(t) &= \widehat{J}^{c}_{0c}(x_1)^{-1} \left[\dot{y}_{2_d}(t) \!+\! K_{c} \, \psi \!+\! S_t(s_y,\Lambda_3,\Lambda_4)\right] \,.
+\label{eq:w_sliding}
+\end{align}
+%
+where $\widehat{J}^{c}_{0c}(x_1) = J^{c}_{0c}(x_1,\widehat{\Pi}_g)$ and $\psi$ is a function of $y_1$, $y_2$ and $r_{c_d}$. 
+%Matrices $\Lambda_3,\Lambda_4$ are positive-definite.
+%
+The inner sliding surface is defined as:
 %
 \begin{equation}
-s_{y} = e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) \,, \quad K_{c} > 0 \,,
-\label{eq:quaternion_sliding_surface}
+s_x = x_2 - \int^t_0{w(\tau)} \, d\tau\,,
+\label{eq:sx_sliding}
 \end{equation}
 %
-whose dynamics is given by
-%
-%\begin{align}
-%\dot{s}_{y} = \dot{y}_{2_d} - \dot{y}_2 \,+\, &
-%K_{c} \, ( y_{11} \, \dot{y}_{12_d} + \dot{y}_{11} \, y_{12_d} -\dot{y}_{11_d} \, y_{12}
-%\label{eq:quaternion_sliding_dynamics} \\
-%& \,\,\, - y_{11_d} \, \dot{y}_{12} - \dot{\widehat{y}}_{12_d} \, y_{12} - \widehat{y}_{12_d} \, \dot{y}_{12}) \,. \nonumber
-%\end{align}
+and the corresponding inner control law is:
 %
 \begin{align}
-\dot{s}_{y} &= \dot{y}_{2_d} - J^{c}_{0c}(x_1) \, \dot{x}_2 - y_3 + K_{c} \, \psi(y_1,y_2,r_{c_d}) \,, \label{eq:quaternion_sliding_dynamics2}
+u(t) &= \widehat{M}_{qq}(x_1) \, \left[ w(t) - S_t(s_x,\Lambda_1,\Lambda_2) \right] \,,
+\label{eq:u_sliding}
 \end{align}
 %
-with $\psi(y_1,y_2,r_{c_d}) = y_{11} \, \dot{y}_{12_d} - 0.5 \, y^\mathsf{T}_{12} \, y_{2} \, y_{12_d} - \dot{y}_{11_d} \, y_{12} - \dot{\widehat{y}}_{12_d} \, y_{12} - 0.5 \, y_{11_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2} - 0.5 \, \widehat{y}_{12_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2}$ 
-and the derivatives of the reference are 
-$\dot{y}_{11_d} = -0.5 \, y^\mathsf{T}_{12} \, y_{2_d}$ 
-and 
-$\dot{y}_{12_d} = 0.5 ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2_d}$.
+where $\widehat{M}_{qq}(x_1) = M_{qq}(x_1,\widehat{\Pi}_g,\widehat{\Pi}_d)$.
 %
-%\begin{align}
-%\psi &= y_{11} \, \dot{y}_{12_d} - 0.5 \, y^\mathsf{T}_{12} \, y_{2} \, y_{12_d} - 
-%\dot{y}_{11_d} \, y_{12} - \dot{\widehat{y}}_{12_d} \, y_{12} \nonumber \\
-%& - 0.5 \, y_{11_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2} - 0.5 \, \widehat{y}_{12_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2} \,, \nonumber \\
-%\dot{y}_{11_d} &= -0.5 \, y^\mathsf{T}_{12} \, y_{2_d} \,, \qquad \qquad
-%\dot{y}_{12_d} = 0.5 ( y_{11} \, \mathbf{I}_{3} - \hat{y}_{12} ) \, y_{2_d} \,. \nonumber
-%\end{align}
+Then, control laws \eqref{eq:u_sliding} and \eqref{eq:w_sliding} ensure finite-time exact convergence 
+of the sliding variables $s_x$ and $s_y$ as defined in \eqref{eq:sx_sliding} and 
+\eqref{eq:quaternion_sliding_surface}. Furthermore, the quaternion and angular velocity errors 		$e_c$, 
+$e_\omega$ are asymptotically stable under the dynamics of $s_y = 0$: 
+%
+\begin{equation}
+e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) = 0 \,.
+\label{eq:quaternion_sliding_condition}
+\end{equation}
 
-\begin{assumption}
-\label{ass:1}
-Here, suppose that the system \eqref{eq:STC_system} is already sliding after a finite time $T_1>0$. Therefore, $\dot{x}_2 = w(t)$. Under this assumption, \eqref{eq:quaternion_sliding_dynamics2} becomes 
-$$\dot{s}_y = \dot{y}_{2_d}(t) - J^{c}_{0c}(x_1,\Pi_g) \, w(t) - y_3 + K_{c} \, \psi(y_1,y_2,r_{c_d})\,.$$
-\end{assumption}
-
-Under Assumption \ref{ass:1}, the {\it outer} control law:
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+%
+Using \eqref{eq:inner_model} and \assref{remark2}, the dynamics of the sliding variable $s_x$ is given by:
 %
 \begin{align}
-w(t) &\!=\! J^{c}_{0c}(x_1,\Pi)^{-1} \left[\dot{y}_{2_d}(t) \!+\! K_{c} \, \psi \!+\! S_t(s_y,\Lambda_3,\Lambda_4)\right] \,.
-\label{eq:quaternion_w_sliding}
+\dot{s}_x = \dot{x}_2 - w(t) = M^{-1}_{qq} \, u(t) + x_3 - w(t) \,.
+\label{eq:dsx_sliding}
 \end{align}
 %
-can be applied to \eqref{eq:quaternion_sliding_dynamics2}, yielding:
+Substituting \eqref{eq:u_sliding} into \eqref{eq:dsx_sliding}, it becomes:
+%
+\begin{align}
+\dot{s}_x &= - ( \mathbf{I}_3 - M_{qq}^{-1} \, \Delta M_{qq}  )\,S_t(s_x,\Lambda_1,\Lambda_2) + x_3 \,, 
+\label{eq:dsx_sliding2}
+\end{align}
+%
+where $\Delta M_{qq} = M_{qq} - \widehat{M}_{qq}$. Using \eqref{eq:dyn_regressor}, 
+$\Delta M_{qq} \, S_t = Y^*_q \, \widetilde{\Pi}_d + \Delta Y^*_q \, \widehat{\Pi}_d$, with $\Delta Y^*_q = Y^*_q - \widehat{Y}^*_q$, where $Y^*_q = Y_q(x_1,0,S_t(s_x,\Lambda_1,\Lambda_2),0,0,0,0,\Pi_g)$ and $\widehat{Y}^*_q = Y_q(x_1,0,S_t(s_x,\Lambda_1,\Lambda_2),0,0,0,0,\widehat{\Pi}_g)$.
+%
+Then, it is possible to rewrite \eqref{eq:dsx_sliding2} as:
+%
+\begin{align}
+\dot{s}_x &= - \Lambda_1 \, \aket{s_x}^{1/2} + w_x \,, \nonumber \\
+\dot{w}_x &= - \Lambda_2 \, \aket{s_x}^{0} + d_x \,,
+\label{eq:STC_system}
+\end{align}
+%
+where $d_x = \nabla (M_{qq}^{-1} \, Y^*_q)\,\widetilde{\Pi}_d + \nabla (M_{qq}^{-1} \, \Delta Y^*_q)\,\widehat{\Pi}_d + \dot{x}_3$ is clearly dependent on the base motion and on the errors on the geometric and dynamic parameters. Here, the operator $\nabla$ denotes time differentiation.
+
+Note that \eqref{eq:STC_system} is STA, and therefore is finite-time stable for bounded disturbances.
+%
+It is evident that, if the nominal parameters are well known, system \eqref{eq:dsx_sliding2} is only perturbed by $d_x \approx \dot{x}_3$.
+%
+%Suppose that the following inequalities hold:
+Due to Assumptions \ref{assump:1} and \ref{assump:2}, the following inequalities hold:
+%
+\begin{align}
+\norm{ \nabla (M_{qq}^{-1} \, Y^*_q)\,\widetilde{\Pi}_d } &< L_{x_1} \,, \\
+\norm{ \nabla (M_{qq}^{-1} \, \Delta Y^*_q)\,\widehat{\Pi}_d } &< L_{x_2} \,, \\
+\norm{ \dot{x}_3 } &< L_{x_3} \,.
+\end{align}
+
+Then, $\norm{d_x} < L_{x_1} + L_{x_2} + L_{x_3}$, and according to \cite{Moreno2012}, it is possible to chose $\Lambda_1$ and $\Lambda_2$ so that \eqref{eq:STC_system} achieves SOSM in finite-time. 
+%
+It means that after a time $T_1>0$, $s_x = \dot{s}_x = 0$ and due to \eqref{eq:dsx_sliding}, $\dot{x}_2 = w(t) \,\, \forall t>T_1$, even in the presence of the bounded disturbance $d_x$.
+
+Next, using \eqref{eq:outer_model}, \eqref{eq:quaternion_errors1} and \eqref{eq:quaternion_errors2}, the dynamics of the outer sliding variable \eqref{eq:quaternion_sliding_surface} is given by
+%
+\begin{align}
+\dot{s}_{y} &= \dot{y}_{2_d} - J^{c}_{0c}(x_1) \, \dot{x}_2 - y_3 + K_{c} \, \psi \,,
+\label{eq:quaternion_sliding_dynamics2}
+\end{align}
+%
+where $\psi(y_1,y_2,r_{c_d}) = y_{11} \, \dot{y}_{12_d} - 0.5 \, y^\mathsf{T}_{12} \, y_{2} \, y_{12_d} - \dot{y}_{11_d} \, y_{12} - \dot{\widehat{y}}_{12_d} \, y_{12} - 0.5 \, y_{11_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2} - 0.5 \, \widehat{y}_{12_d} \, ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2}$, 
+with $\dot{y}_{1_d} = \mathbf{h}_-(y_1) \, y_{2_d}$.
+%$\dot{y}_{11_d} = -0.5 \, y^\mathsf{T}_{12} \, y_{2_d}$ and $\dot{y}_{12_d} = 0.5 ( y_{11} \, \mathbf{I}_{3} - \widehat{y}_{12} ) \, y_{2_d}$.
+
+Since $\dot{x}_2 = \dot{s}_x + w(t)$, substituting \eqref{eq:w_sliding} into \eqref{eq:quaternion_sliding_dynamics2} yields:
 %
 \begin{align}
 \dot{s}_y &= - \Lambda_3 \, \aket{s_y}^{1/2} + w_y \,, \nonumber \\
-\dot{w}_y &= - \Lambda_4 \, sign(s_y) - \dot{y}_3 \,,
+\dot{w}_y &= - \Lambda_4 \, \aket{s_y}^{0} + d_y \,,
 \label{eq:quaternion_STC_outer_system}
 \end{align}
 %
-once again guaranteeing finite-time stabilization after a time $T_2>0$ and under the assumption of $\norm{\dot{y}_3} < L_y$. 
+where $d_y = - \dot{y}_3 - \nabla( J^c_{0c} \, \dot{s}_x ) - \nabla( W^*_\omega ) \widetilde{\Pi}_g$, with $W^*_\omega = W_\omega (x_1, w(t), 0)$, according to \eqref{eq:kin_regressor}.
 %
-It means that for all $t \ge T_2$, the system is sliding and therefore, it follows the nonlinear dynamics of the sliding variable \eqref{eq:quaternion_sliding_surface}, which is asymptotically stable according to \cite{Siciliano2009}.
-
-\begin{theorem}
-
-\end{theorem}
-
-\begin{proof}
+%Again, suppose that the following inequalities hold:
+Again, due to Assumptions \ref{assump:1} and \ref{assump:2}:
+%
+\begin{align}
+\norm{ \nabla( J^c_{0c} \, \dot{s}_x ) } &< L_{y_1} \,, \label{eq:inequality_y1} \\
+\norm{ \nabla( W^*_\omega ) \widetilde{\Pi}_g } &< L_{y_2} \,, \label{eq:inequality_y2} \\
+\norm{ \dot{y}_3 } &< L_{y_3} \label{eq:inequality_y3} \,.
+\end{align}
+%
+Note that \eqref{eq:inequality_y1} is reasonable, since $\ddot{s}_x$ is bounded, but constant 
+$L_{y_1}$ clearly depends on the initial conditions of \eqref{eq:inner_model}.
+%
+Also, in \eqref{eq:inequality_y2}, $\nabla( W^*_\omega )$ depends on $x_1$, $x_2$, $w(t)$ and $\dot{w}(t)$, which are also bounded.
+%
+Then, $\norm{ d_y } < L_{y_1} + L_{y_2} + L_{y_3}$, again guaranteeing finite-time stabilization of \eqref{eq:quaternion_STC_outer_system} after a time $T_2>0$.
+%
+It means that for all $t \ge T_2$, the system is sliding and therefore, it follows the nonlinear dynamics of the sliding variable \eqref{eq:quaternion_sliding_surface}, which is asymptotically stable \cite{Siciliano2009}.
+%
+Therefore, the quaternion errors \eqref{eq:quaternion_errors1} and \eqref{eq:quaternion_errors2} tend to zero asymptotically after a time $max(T_1,T_2)$.
 
 \end{proof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{HOSMO Observer for STC with Output Feedback}
-\label{sec:STC_output_feedback}
-
-If all system states $q,\dot{q} \in \mathbb{R}^3$ are not available, but only the joint angles $q$, 
-a second order differentiator can be used to estimate $\dot{q}$.
-%
-It was introduced by Levant in his seminal work \rev{\cite{}}. This system is a third-order observer based on the theory of HOSMs. 
-
-Defining the estimation error $e_{x_1} = x_1 - \hat{x}_1$, the HOSM observer for the second order nonlinear system \eqref{eq:SS_inner_model} is:
-%
-\begin{align}
-\dot{\widehat{x}}_1 &= k_1 \, \aket{e_{x_1}}^{2/3} + \widehat{x}_2 \,, \nonumber \\
-\dot{\widehat{x}}_2 &= k_2 \, \aket{e_{x_1}}^{1/3} + \widehat{x}_3 + M^{-1}_{qq}(x_1,\Pi) \, u \,, \nonumber \\
-\dot{\widehat{x}}_3 &= k_3 \, sgn(e_{x_1}) \,.
-\label{eq:x_HOSMO}
-\end{align}
-
-%Defining also the estimation errors $e_{x_2} = x_2 - \widehat{x}_2$, $e_{x_3} = x_3 - \widehat{x}_3$ and using \eqref{eq:SS_inner_model}, the error dynamics for \eqref{eq:x_HOSMO} is:
-%%
-%\begin{align}
-%\dot{e}_{x_1} &= -k_1 \, \aket{e_{x_1}}^{2/3} + e_{x_2} \,, \nonumber \\
-%\dot{e}_{x_2} &= -k_2 \, \aket{e_{x_1}}^{1/3} + e_{x_3} \,, \nonumber \\
-%\dot{e}_{x_3} &= -k_3 \, sgn(e_{x_1}) + \dot{x}_3 \,,
-%\label{eq:error_x_HOSMO}
-%\end{align}
-%
-%Its state space representation is given by:
-%%
-%\begin{align}
-%\dot{z}_1 &= k_1 \, \aket{z_1 - \sigma(t)}^{2/3} + z_2 \,, \nonumber \\
-%\dot{z}_2 &= k_2 \, \aket{z_1 - \sigma(t)}^{1/3} + z_3 \,, \nonumber \\
-%\dot{z}_3 &= k_3 \, sgn(z_1 - \sigma(t)) \,.
-%\label{eq:x_HOSMO}
-%\end{align}
-%
-Its already proven by literature \cite{Angulo2013} that after a finite time $T_{reach}>0$, the states of the second-order differentiator \eqref{eq:x_HOSMO} uniformly converge to $\widehat{x}_1 = x_1$, $\widehat{x}_2 = x_2$ and $\widehat{x}_3 = x_3$, given that $\norm{\dot{x}_3} < L_x$.
-
-Defining the {\it modified} sliding surface
-%
-\begin{equation}
-\widehat{s}_x = \widehat{x}_2 - \int^t_0{w(\tau)} \, d\tau \,,
-\label{eq:sx_sliding_HOSMO}
-\end{equation}
-%
-its dynamics is given by:
-%
-\begin{align}
-\dot{\widehat{s}}_x &= 
-%\dot{\widehat{x}}_2 - w(t) 
-k_2 \, \aket{e_{x_1}}^{1/3} + \widehat{x}_3 + M^{-1}_{qq}(x_1,\Pi) \, u - w(t) \,.
-\label{eq:dsx_sliding_HOSMO}
-\end{align}
-
-Modifying control law \eqref{eq:u_sliding} to
-%
-\begin{equation}
-u(t) \!=\! M_{qq}(x_1,\Pi) \left[ w(t) \!-\! k_2 \, \aket{e_{x_1}}^{1/3} \!-\! S_t(\widehat{s}_x,\Lambda_1,\Lambda_2) \right],
-\label{eq:u_sliding_HOSMO}
-\end{equation}
-%
-the exact same STA than in \eqref{eq:STC_system} is obtained, but with $s_x$ replaced by the modified sliding variable $\widehat{s}_x$. 
-%
-%\begin{align}
-%\dot{\hat{s}}_x &= - \Lambda_1 \, \aketext{\hat{s}_x}{1/2} + \hat{w}_x \,, \nonumber \\
-%\dot{\hat{w}}_x &= - \Lambda_2 \, sign(\hat{s}_x) + \dot{\hat{x}}_3 \,,
-%\label{eq:STC_system_HOSMO}
-%\end{align}
-
-\begin{remark}
-Another HOSMO could be designed to estimate the camera angular velocity $\omega_c^c(t)$. However, usually the camera orientation $r_c(t)$ is obtained from an {\it Inertial Measurement Unit (IMU)}, a device that combines measurements of gyroscopes (which measure angular velocity) and magnetometers (which measure magnetic fields), providing an accurate estimate for $r_c(t)$. Therefore, trustworthy direct measurements of $\omega^c_c(t)$ are usually already available.
-\end{remark}
-
-\begin{theorem}
-
-\end{theorem}
-
-\begin{proof}
-
-\end{proof}
+\input{control_HOSMO}

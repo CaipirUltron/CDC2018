@@ -1,0 +1,150 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{HOSMO Observer for STC with Output Feedback}
+\label{sec:STC_output_feedback}
+
+If state $x_2 \in \mathbb{R}^3$ is not available, an observer could be used to estimate the joint velocity state $x_2(t)$ using the measurements of $x_1(t)$.
+%
+Because of its desired characteristics such as finite-time exact convergence, sliding mode observers 
+could be used for this purpose, such as the {\it super-twisting} observer (STO) \cite{Moreno2012}.
+%
+However, according to \cite{Chalanga2016}, it is not possible to achieve SOSM using {\it continuous} 
+control when STC is implemented based on STO. A solution is to use STC with HOSM-based observers to achieve continuous control. 
+
+\begin{remark}
+Two HOSMOs could be designed: one for the joint velocities $x_2(t)$, and other for the camera angular velocity $y_2(t)$. However, usually the camera orientation $y_1(t)$ is obtained from an {\it Inertial Measurement Unit (IMU)}, a device that combines measurements of gyroscopes (which measure angular velocity) and magnetometers (which measure magnetic fields), providing an accurate estimate for $y_1(t)$. Therefore, trustworthy direct measurements of $y_2(t)$ are usually already available.
+\end{remark}
+
+%The following theorem provides an stability analysis for the proposed STC and HOSM observer.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[{\it Cascade STC with Output State Feedback}]
+
+Let \eqref{eq:inner_model} and \eqref{eq:outer_model} be the system dynamic and kinematic models.
+%
+Assume the following:
+%
+\begin{enumerate}[label=(\roman*)]
+%
+\item the ISP joint velocities and accelerations are uniformly norm-bounded; \label{hosm_assump:1}
+%there are $\rho_1,\,\rho_2 > 0$ such that: $\norm{\dot{q}} \leq \rho_1$, $\norm{\ddot{q}} \leq \rho_2$;
+%
+\item the zero, first and second order time-derivatives of the vehicle velocity twists are uniformly norm-bounded; \label{hosm_assump:2}
+%there are $\epsilon_1,\,\epsilon_2 > 0$ such that: $\norm{V^b_{0b}} \leq \epsilon_1$, $\norm{V^b_{0b}} \leq \epsilon_2$.
+%
+\end{enumerate}
+%
+Defining the estimation error $e_{x_1} = x_1 - \hat{x}_1$, the HOSM observer for $x_2$ is the third-order system:
+%
+\begin{align}
+\dot{\widehat{x}}_1 &= K_1 \, \aket{e_{x_1}}^{2/3} + \widehat{x}_2 \,, \nonumber \\
+\dot{\widehat{x}}_2 &= K_2 \, \aket{e_{x_1}}^{1/3} + \widehat{x}_3 + \widehat{M}^{-1}_{qq}(x_1) \, u \,, \nonumber \\
+\dot{\widehat{x}}_3 &= K_3 \, \aket{e_{x_1}}^{0} \,.
+\label{eq:x_HOSMO}
+\end{align}
+%
+where $K_1$, $K_2$ and $K_3$ are positive-definite matrices.
+%
+The outer sliding variable and control law are defined in the same way as \eqref{eq:quaternion_sliding_surface} and \eqref{eq:w_sliding}.
+%
+The {\it modified} inner sliding variable is:
+%
+\begin{equation}
+\widehat{s}_x = \widehat{x}_2 - \int^t_0{w(\tau)} \, d\tau \,,
+\label{eq:sx_sliding_HOSMO}
+\end{equation}
+%
+and the corresponding inner control law is:
+%
+\begin{equation}
+u(t) \!=\! \widehat{M}_{qq}(x_1) \left[ w(t) \!-\! K_2 \, \aket{e_{x_1}}^{1/3} \!-\! S_t(\widehat{s}_x,\Lambda_1,\Lambda_2) \right].
+\label{eq:u_sliding_HOSMO}
+\end{equation}
+%
+Then, control laws \eqref{eq:u_sliding_HOSMO} and \eqref{eq:w_sliding} with observer \eqref{eq:x_HOSMO} ensure finite-time exact convergence of the sliding variables $s_x$ and $s_y$ as defined in \eqref{eq:sx_sliding_HOSMO} and \eqref{eq:quaternion_sliding_surface}, and of the estimation errors $e_{x_1}$, $e_{x_2} = x_2 - \widehat{x}_2$ and $e_{x_3} = x_3 - \widehat{x}_3$. Furthermore, the quaternion and angular velocity errors $e_c$, $e_\omega$ are asymptotically stable under the dynamics of \eqref{eq:quaternion_sliding_condition}. 
+
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+
+%HOSMOs are third-order systems introduced by Levant in his seminal work \cite{Levant2003}.
+%
+Using \eqref{eq:inner_model} and \eqref{eq:x_HOSMO}, the dynamics of the estimation errors is:
+%
+\begin{align}
+\dot{e}_{x_1} &= -K_1 \, \aket{e_{x_1}}^{2/3} + e_{x_2} \,, \nonumber \\
+\dot{e}_{x_2} &= -K_2 \, \aket{e_{x_1}}^{1/3} + e_{x_3} + (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, u \,, \nonumber \\
+\dot{e}_{x_3} &= -K_3 \, \aket{e_{x_1}}^{0} + \dot{x}_3 \,.
+\label{eq:error_x_HOSMO}
+\end{align}
+%
+By using transformation $e_{x_4} = e_{x_3} + (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, u$, it is possible to rewrite \eqref{eq:error_x_HOSMO} as:
+%
+%
+\begin{align}
+\dot{e}_{x_1} &= -K_1 \, \aket{e_{x_1}}^{2/3} + e_{x_2} \,, \nonumber \\
+\dot{e}_{x_2} &= -K_2 \, \aket{e_{x_1}}^{1/3} + e_{x_4} \,, \nonumber \\
+\dot{e}_{x_4} &= -K_3 \, \aket{e_{x_1}}^{0} + d_{e} \,.
+\label{eq:error_x_HOSMO2}
+\end{align}
+%
+where $d_e = \dot{x}_3 + (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, \dot{u} + \nabla (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, u$. 
+%
+Due to Assumption \ref{hosm_assump:1} and \eqref{eq:u_sliding_HOSMO}, two constants $L_{e_1}, L_{e_2} > 0$ exist, such that:
+%
+\begin{align}
+\norm{ (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, \dot{u} } &< L_{e_1} \,, \\
+\norm{ \nabla (M^{-1}_{qq} - \widehat{M}^{-1}_{qq}) \, u } &< L_{e_2} \,.
+\end{align}
+%
+Also, by Assumption \ref{hosm_assump:2}, $\norm{ \dot{x}_3 } < L_{x_3}$ also holds.
+Then, $\norm{d_e} < L_{e_1} + L_{e_2} + L_{x_3}$, and therefore the disturbance $d_e$ is norm-bounded. According to \rev{()}, it is possible to chose $K_1$, $K_2$ and $K_3$ so that the states on \eqref{eq:error_x_HOSMO2} are finite-time stable.
+%
+\begin{remark}
+Since $M^{-1}_{qq} - \widehat{M}^{-1}_{qq} \ne 0$ due to parametric uncertainty, the estimation error $e_{x_3}$ is expected to be norm-bounded only. Therefore, $x_3 = \widehat{x}_3 + \mathbb{\beta}(\widetilde{\Pi})$, where $\mathbb{\beta}(\widetilde{\Pi})$ is a small residue dependent on the parametric uncertainty.
+\end{remark}
+
+The dynamics of the modified sliding variable is given by:
+%
+\begin{align}
+\dot{\widehat{s}}_x &= K_2 \, \aket{e_{x_1}}^{1/3} + \widehat{x}_3 + \widehat{M}^{-1}_{qq}(x_1) \, u(t) - w(t) \,.
+%\dot{\widehat{x}}_2 - w(t) 
+\label{eq:dsx_sliding_HOSMO}
+\end{align}
+%
+Using the {\it continuous} control law \eqref{eq:u_sliding_HOSMO}, yields:
+%
+\begin{align}
+\dot{\widehat{s}}_x &= - \Lambda_1 \, \aket{\widehat{s}_x}^{1/2} + \widehat{w}_x \,, \nonumber \\
+\dot{\widehat{w}}_x &= - \Lambda_2 \, \aket{\widehat{s}_x}^{0} + K_3 \aket{e_{x_1}}^{0} \,.
+\label{eq:STC_HOSMO_system}
+\end{align}
+%
+Since the disturbance $K_3 \aket{e_{x_1}}^{0}$ is obviously norm-bounded, the STA \eqref{eq:STC_HOSMO_system} is finite-time stable. Therefore, after a finite time $\bar{T}_1 > 0$, $\dot{x}_2 = w(t)$.
+
+To prove the stability of the outer controller, a similar procedure is performed.
+Since $\dot{x}_2 = \dot{\widehat{s}}_x + \dot{e}_{x_2} + w(t)$, substituting \eqref{eq:w_sliding} into \eqref{eq:quaternion_sliding_dynamics2} yields:
+%
+\begin{align}
+\dot{s}_y &= - \Lambda_3 \, \aket{s_y}^{1/2} + w_y \,, \nonumber \\
+\dot{w}_y &= - \Lambda_4 \, \aket{s_y}^{0} + \bar{d}_y \,,
+\label{eq:quaternion_STC_HOSMO_outer_system}
+\end{align}
+%
+where $\bar{d}_y = - \dot{y}_3 - \nabla( J^c_{0c} \, \dot{\widehat{s}}_x ) + \nabla ( J^c_{0c} \dot{e}_{x_2}) - \nabla( W^*_\omega ) \widetilde{\Pi}_g$.
+%with $W^*_\omega = W_\omega (x_1, w(t), 0)$, according to \eqref{eq:kin_regressor}.
+%
+Again, due to Assumptions \ref{assump:1} and \ref{assump:2}, \eqref{eq:error_x_HOSMO2} and \eqref{eq:STC_HOSMO_system}, two positive constants $\bar{L}_{y_1}$, $\bar{L}_{y_2}$ exist, such that:
+%
+\begin{align}
+\norm{ \nabla( J^c_{0c} \, \dot{\widehat{s}}_x ) } &< \bar{L}_{y_1} \,, \label{eq:HOSMO_inequality_y1} \\
+\norm{ \nabla ( J^c_{0c} \dot{e}_{x_2}) } &< \bar{L}_{y_2} \,, \label{eq:HOSMO_inequality_y2}
+\end{align}
+%
+Then, $\norm{ \bar{d}_y } < \bar{L}_{y_1} + \bar{L}_{y_2} + L_{y_2} + L_{y_3}$, again guaranteeing finite-time stabilization of \eqref{eq:quaternion_STC_HOSMO_outer_system} after a time $\bar{T}_2>0$.
+%
+%It means that for all $t \ge \bar{T}_2$, the system is sliding and therefore, it follows the nonlinear dynamics of the sliding variable \eqref{eq:quaternion_sliding_surface}, which is asymptotically stable \cite{Siciliano2009}.
+%
+Therefore, the quaternion errors \eqref{eq:quaternion_errors1} and \eqref{eq:quaternion_errors2} tend to zero asymptotically after a time $max(\bar{T}_1,\bar{T}_2)$.
+
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
