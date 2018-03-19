@@ -1,4 +1,29 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
+
+The majority of works in line of sight (LOS) stabilization and tracking using inertially stabilized platforms (ISP) apply simple linear controllers to achieve the required performance. 
+%
+Commonly, linear models are employed to describe the relationship between torque and position of the ISP joints, such as a double integrator with an inertia gain.
+%
+%However, high-accuracy and/or fast motion applications may often require more involved control techniques.
+%
+However, these techniques do not provide ideal disturbance rejection or finite-time convergence, which are desired characteristics for these type of systems in the context of high-accuracy applications.
+
+In this work, we propose a novel Sliding Mode Control (SMC) strategy 
+%based on the Super-Twisting Algorithm (STA) 
+for both stabilization and orientation tracking for a sensor in a 3-DOF ISP installed on a moving base.
+%such as a vehicle.
+%
+Two distinct cases are considered: full state feedback and output feedback only.
+%
+In the latter case, a High-Order Sliding Mode observer (HOSMO) is proposed for the estimation of the ISP joint velocities.
+%
+In each case, two Super Twisting Controllers (STC) are employed in a cascade topology. 
+%
+The inner controller ideally rejects the \textit{dynamic} disturbances acting on the ISP joints, uncoupling the system into an ideal double integrator. 
+%
+The outer controller ensures orientation tracking in quaternion space, ideally rejecting all remaining kinematic disturbances.
+
+Numerical simulations using Matlab show the efficiency and performance of the proposed controller and observer.
 
 \end{abstract}

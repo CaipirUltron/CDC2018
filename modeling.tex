@@ -308,10 +308,11 @@ The time-derivative of $r_i$ can be related to $\omega^i_{i}$ by:
 \dot{\epsilon}_i 
 \end{array} \right] = 
 %
-\frac{1}{2} \, \left[ \begin{array}{cc}
-- \epsilon_i^\mathsf{T} \\
-\eta_i\,\mathbf{I}_3 + \widehat{\epsilon}_i
-\end{array} \right] \, \omega^i_{i} \,, 
+\frac{1}{2} \, \mathbf{h}_+(r_i) \, \omega^i_{i} \,, 
+%\left[ \begin{array}{cc}
+%- \epsilon_i^\mathsf{T} \\
+%\eta_i\,\mathbf{I}_3 + \widehat{\epsilon}_i
+%\end{array} \right] \, 
 \label{eq:quaternion_propagation}
 \end{align}
 %
@@ -428,8 +429,8 @@ R_{i,i+1} \!\!\!&\!\!\! 0         \\
 }\,\,\,\,,\\
 %
 &A_{i+1} &=& \mat{
-\mathbf{S}(v^{i}_{0i} + \mathbf{S}(\omega^{i}_{0i}) \, p^{i}_{i,i+1}) \, h^{i}_{i+1} \\
-\mathbf{S}(\omega^{i}_{0i}) \, h^{i}_{i+1} }
+\mathbf{S}(v^{i}_{i} + \mathbf{S}(\omega^{i}_{i}) \, p^{i}_{i,i+1}) \, h^{i}_{i+1} \\
+\mathbf{S}(\omega^{i}_{i}) \, h^{i}_{i+1} }
 \end{alignat*}
 %
 %\begin{alignat*}{3}
@@ -588,20 +589,36 @@ The Newton-Euler algorithm is composed of two steps. The first one is the \texti
 Solving the Newton-Euler equations for the contact \textit{body wrenches} $F^{i}_{i} \in \mathbb{R}^{6}$ between the VMS bodies (links and vehicle), yields:
 %
 \begin{align}
-\label{eq:backward_step}
-F^{i}_{i} &= \Phi^\mathsf{T}_{i+1,i} \, \Omega_{i,i+1} \, F^{i+1}_{i+1} + M_{i} \, \dot{V}^{i}_{0i} + B_{i} \,, \\
+F^{i}_{i} &= \Phi^\mathsf{T}_{i+1,i} \, \Omega_{i,i+1} \, F^{i+1}_{i+1} + M_{i} \, \dot{V}^{i}_{i} + B_{i} \,, \label{eq:backward_step} \\
 %
-M_{i} &= \left[\begin{array}{cc}
-m_i \, \mathbf{I}_{3} \!\!&\!\! - m_i \, \hat{p}^{i}_{i\bar{i}} \\
-m_i \, \hat{p}^{i}_{i\bar{i}} \!\!&\!\! I^{i}_{i}
-\end{array}\right] , \nonumber \\
+M_{i} &= \left[\!\!\begin{array}{cc}
+m_i \, \mathbf{I}_{3} \!\!\!&\!\!\! - m_i \, \mathbf{S}(p^{i}_{i\bar{i}}) \\
+m_i \, \mathbf{S}(p^{i}_{i\bar{i}}) \!\!\!&\!\!\! I^{i}_{i}
+\end{array}\!\!\right], \nonumber \\
 %
-B_{i} &= \left[\begin{array}{c}
-m_i \, \hat{\omega}^{i}_{i} \, ( \hat{\omega}^{i}_{i} \, p^{i}_{i\bar{i}} + v^{i}_{i} ) \\
-m_i \, \hat{p}^{i}_{i\bar{i}} \, \hat{\omega}^{i}_{i} \, v^{i}_{i} +
-\hat{\omega}^{i}_{i} \, I^{i}_{i} \, \omega^{i}_{i}
-\end{array}\right] , \nonumber
+B_{i} &= \left[\!\!\begin{array}{c}
+m_i \, \mathbf{S}(\omega^{i}_{i}) \, ( \mathbf{S}(\omega^{i}_{i}) \, p^{i}_{i\bar{i}} + v^{i}_{i} ) \\
+m_i \, \mathbf{S}(p^{i}_{i\bar{i}}) \, \mathbf{S}(\omega^{i}_{i}) \, v^{i}_{i} +
+\mathbf{S}(\omega^{i}_{i}) \, I^{i}_{i} \, \omega^{i}_{i}
+\end{array}\!\!\right], \nonumber
+%
 \end{align}
+%
+%\begin{align}
+%\label{eq:backward_step}
+%F^{i}_{i} &= \Phi^\mathsf{T}_{i+1,i} \, \Omega_{i,i+1} \, F^{i+1}_{i+1} + M_{i} \, \dot{V}^{i}_{0i} + B_{i} \,, \\
+%%
+%M_{i} &= \left[\begin{array}{cc}
+%m_i \, \mathbf{I}_{3} \!\!&\!\! - m_i \, \hat{p}^{i}_{i\bar{i}} \\
+%m_i \, \hat{p}^{i}_{i\bar{i}} \!\!&\!\! I^{i}_{i}
+%\end{array}\right] , \nonumber \\
+%%
+%B_{i} &= \left[\begin{array}{c}
+%m_i \, \hat{\omega}^{i}_{i} \, ( \hat{\omega}^{i}_{i} \, p^{i}_{i\bar{i}} + v^{i}_{i} ) \\
+%m_i \, \hat{p}^{i}_{i\bar{i}} \, \hat{\omega}^{i}_{i} \, v^{i}_{i} +
+%\hat{\omega}^{i}_{i} \, I^{i}_{i} \, \omega^{i}_{i}
+%\end{array}\right] , \nonumber
+%\end{align}
 %
 %where $I^{i}_{i} = I^{\bar{i}}_{\bar{i}} - m_i \, (\hat{p}^{i}_{i\,\bar{i}})^{2}$ is the inertia tensor of body $i$ written in $\mathbf{E}_{i}$.
 %
