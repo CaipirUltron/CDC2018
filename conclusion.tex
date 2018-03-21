@@ -1,2 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion and Future Works}
+
+In this work, we have proposed a cascade super-twisting control (STC) method for stabilization and tracking of a 3-DOF ISP.
+%
+Both full state and output feedback cases are considered; the further employs a HOSM observer for joint velocity estimation.
+%
+Although the algorithms use the ISP mass matrix and its geometrical Jacobian, the obtained tracking accuracy is much better than with P-PI or computed torque control \cite{Reis2018}, even in the presence of strong parametric uncertainty and sensor noise.
+%
+Besides, considering the amplitude and frequency of the control chattering, it is reasonable to conclude that this scheme could be implemented in a real system.
+
+In the general, the performance of the output feedback STC is very close to the full state feedback STC, but with the clear advantage of avoiding taking joint velocity measurements, which are often very noisy or obtained by other estimation methods.
+
+Future works include a more detailed study of the analytical properties of the proposed controllers, such as the computation of the approximate convergence times and robustness to unmodeled dynamics.

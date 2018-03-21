@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{HOSMO Observer for STC with Output Feedback}
+\subsection{Super-Twisting Control with HOSM Observer}
 \label{sec:STC_output_feedback}
 
 If state $x_2 \in \mathbb{R}^3$ is not available, an observer could be used to estimate the joint velocity state $x_2(t)$ using the measurements of $x_1(t)$.
@@ -7,8 +7,7 @@ If state $x_2 \in \mathbb{R}^3$ is not available, an observer could be used to e
 Because of its desired characteristics such as finite-time exact convergence, sliding mode observers 
 could be used for this purpose, such as the {\it super-twisting} observer (STO) \cite{Moreno2012}.
 %
-However, according to \cite{Chalanga2016}, it is not possible to achieve SOSM using {\it continuous} 
-control when STC is implemented based on STO. A solution is to use STC with HOSM-based observers to achieve continuous control. 
+However, according to \cite{Chalanga2016}, it is not possible to achieve {\it second order sliding} ($s=\dot{s}=0$) using {\it continuous} control when STC is implemented based on ST observers. A proposed solution is to use STC with HOSM-based observers to achieve continuous control.
 
 \begin{remark}
 Two HOSMOs could be designed: one for the joint velocities $x_2(t)$, and other for the camera angular velocity $y_2(t)$. However, usually the camera orientation $y_1(t)$ is obtained from an {\it Inertial Measurement Unit (IMU)}, a device that combines measurements of gyroscopes (which measure angular velocity) and magnetometers (which measure magnetic fields), providing an accurate estimate for $y_1(t)$. Therefore, trustworthy direct measurements of $y_2(t)$ are usually already available.
@@ -17,7 +16,7 @@ Two HOSMOs could be designed: one for the joint velocities $x_2(t)$, and other f
 %The following theorem provides an stability analysis for the proposed STC and HOSM observer.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{theorem}[{\it Cascade STC with Output State Feedback}]
+\begin{theorem}[{\it Cascade STC with Output Feedback}]
 
 Let \eqref{eq:inner_model} and \eqref{eq:outer_model} be the system dynamic and kinematic models.
 %
@@ -60,7 +59,7 @@ u(t) \!=\! \widehat{M}_{qq}(x_1) \left[ w(t) \!-\! K_2 \, \aket{e_{x_1}}^{1/3} \
 \label{eq:u_sliding_HOSMO}
 \end{equation}
 %
-Then, control laws \eqref{eq:u_sliding_HOSMO} and \eqref{eq:w_sliding} with observer \eqref{eq:x_HOSMO} ensure finite-time exact convergence of the sliding variables $s_x$ and $s_y$ as defined in \eqref{eq:sx_sliding_HOSMO} and \eqref{eq:quaternion_sliding_surface}, and of the estimation errors $e_{x_1}$, $e_{x_2} = x_2 - \widehat{x}_2$ and $e_{x_3} = x_3 - \widehat{x}_3$. Furthermore, the quaternion and angular velocity errors $e_c$, $e_\omega$ are asymptotically stable under the dynamics of \eqref{eq:quaternion_sliding_condition}. 
+Then, control laws \eqref{eq:u_sliding_HOSMO} and \eqref{eq:w_sliding} with observer \eqref{eq:x_HOSMO} ensure finite-time exact convergence of the sliding variables $s_x$ and $s_y$ as defined in \eqref{eq:sx_sliding_HOSMO} and \eqref{eq:quaternion_sliding_surface}, and of the estimation errors $e_{x_1}$, $e_{x_2} = x_2 - \widehat{x}_2$ and $e_{x_3} = x_3 - \widehat{x}_3$. Furthermore, the quaternion and angular velocity errors $e_c$, $e_\omega$ are asymptotically stable under the dynamics of $s_y = 0$.
 
 \end{theorem}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +96,7 @@ Due to Assumption \ref{hosm_assump:1} and \eqref{eq:u_sliding_HOSMO}, two consta
 \end{align}
 %
 Also, by Assumption \ref{hosm_assump:2}, $\norm{ \dot{x}_3 } < L_{x_3}$ also holds.
-Then, $\norm{d_e} < L_{e_1} + L_{e_2} + L_{x_3}$, and therefore the disturbance $d_e$ is norm-bounded. According to \rev{()}, it is possible to chose $K_1$, $K_2$ and $K_3$ so that the states on \eqref{eq:error_x_HOSMO2} are finite-time stable.
+Then, $\norm{d_e} < L_{e_1} + L_{e_2} + L_{x_3}$, and therefore the disturbance $d_e$ is norm-bounded. According to \cite{Moreno2012_2}, it is possible to chose $K_1$, $K_2$ and $K_3$ so that the states on \eqref{eq:error_x_HOSMO2} are finite-time stable.
 %
 \begin{remark}
 Since $M^{-1}_{qq} - \widehat{M}^{-1}_{qq} \ne 0$ due to parametric uncertainty, the estimation error $e_{x_3}$ is expected to be norm-bounded only. Therefore, $x_3 = \widehat{x}_3 + \mathbb{\beta}(\widetilde{\Pi})$, where $\mathbb{\beta}(\widetilde{\Pi})$ is a small residue dependent on the parametric uncertainty.

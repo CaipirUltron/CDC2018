@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Super-Twisting Control}
+\section{Super-Twisting Control with Quaternion Feedback}
+\label{sec:control}
 
-In this section, a novel second-order sliding mode (SOSM) controller based on super-twisting algorithm (STC) will be developed for the stabilization and tracking of the LOS.
+In this section, a novel second-order sliding mode (SOSM) controller based on super-twisting algorithm (STA) will be developed for the stabilization and tracking of the ISP.
 %
 Two cases are considered: STC with full state feedback and STC with output feedback.
 
@@ -12,7 +13,7 @@ M_{qq} \, \ddot{q} + \tau_d = \tau_q \,,
 \label{eq:dynamic_model}
 \end{equation}
 %
-where $\tau_q \in \mathbb{R}^{3}$ is the vector of generalized forces acting on the robot joints, collocated with $\dot{q}$ and $\tau_d = C_{qq} \, \dot{q} + G_{q} + M_{qV} \, \dot{V}^{b}_{0b} + C_{qV} \, V^{b}_{0b} \in \mathbb{R}^{3}$ is a disturbance vector.
+where $\tau_q \in \mathbb{R}^{3}$ is the vector of generalized forces acting on the robot joints, collocated with $\dot{q}$ and $\tau_d = C_{qq} \, \dot{q} + G_{q} + M_{qV} \, \dot{V}^{0}_{0} + C_{qV} \, V^{0}_{0} \in \mathbb{R}^{3}$ is a disturbance vector.
 %
 %Matrices $M_{qq}(q) \in \mathbb{R}^{3 \times 3}$ and $M_{qV}(q) \in \mathbb{R}^{3 \times 6}$ are mass matrices,
 %%
@@ -103,7 +104,7 @@ the zero, first and second order time-derivatives of the vehicle velocity twists
 %
 \end{enumerate}
 
-Defining the {\it super-twisting control} expression:
+Defining the {\it super-twisting control} expression
 %
 \begin{align}
 S_t(s,A,B) &= A \aket{s}^{1/2} + B \int^{t}_{0}{sgn(s) d\tau} \,, \nonumber
@@ -111,14 +112,14 @@ S_t(s,A,B) &= A \aket{s}^{1/2} + B \int^{t}_{0}{sgn(s) d\tau} \,, \nonumber
 %
 with matrices $A, B > 0$, the super-twisting-based controllers can be defined as follows.
 %
-The outer sliding surface is:
+The outer sliding surface is
 %
 \begin{align}
 s_{y} &= e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) \,, \quad K_{c} > 0 \,,
 \label{eq:quaternion_sliding_surface}
 \end{align}
 %
-where $K_c > 0$. The corresponding outer control law is:
+where $K_c > 0$. The corresponding outer control law is
 %
 \begin{align}
 w(t) &= \widehat{J}^{c}_{0c}(x_1)^{-1} \left[\dot{y}_{2_d}(t) \!+\! K_{c} \, \psi \!+\! S_t(s_y,\Lambda_3,\Lambda_4)\right] \,.
@@ -128,14 +129,14 @@ w(t) &= \widehat{J}^{c}_{0c}(x_1)^{-1} \left[\dot{y}_{2_d}(t) \!+\! K_{c} \, \ps
 where $\widehat{J}^{c}_{0c}(x_1) = J^{c}_{0c}(x_1,\widehat{\Pi}_g)$ and $\psi$ is a function of $y_1$, $y_2$ and $r_{c_d}$. 
 %Matrices $\Lambda_3,\Lambda_4$ are positive-definite.
 %
-The inner sliding surface is defined as:
+The inner sliding surface is defined as
 %
 \begin{equation}
 s_x = x_2 - \int^t_0{w(\tau)} \, d\tau\,,
 \label{eq:sx_sliding}
 \end{equation}
 %
-and the corresponding inner control law is:
+and the corresponding inner control law is
 %
 \begin{align}
 u(t) &= \widehat{M}_{qq}(x_1) \, \left[ w(t) - S_t(s_x,\Lambda_1,\Lambda_2) \right] \,,
@@ -147,12 +148,12 @@ where $\widehat{M}_{qq}(x_1) = M_{qq}(x_1,\widehat{\Pi}_g,\widehat{\Pi}_d)$.
 Then, control laws \eqref{eq:u_sliding} and \eqref{eq:w_sliding} ensure finite-time exact convergence 
 of the sliding variables $s_x$ and $s_y$ as defined in \eqref{eq:sx_sliding} and 
 \eqref{eq:quaternion_sliding_surface}. Furthermore, the quaternion and angular velocity errors 		$e_c$, 
-$e_\omega$ are asymptotically stable under the dynamics of $s_y = 0$: 
+$e_\omega$ are asymptotically stable under the dynamics of $s_y = 0$. 
 %
-\begin{equation}
-e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) = 0 \,.
-\label{eq:quaternion_sliding_condition}
-\end{equation}
+%\begin{equation}
+%e_{\omega} + K_{c} \, \mathsf{Im}(e_{c}) = 0 \,.
+%\label{eq:quaternion_sliding_condition}
+%\end{equation}
 
 \end{theorem}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

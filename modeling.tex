@@ -2,13 +2,15 @@
 \section{ISP Modeling}
 \label{sec:modeling}
 
-In this section, a procedure for deriving the kinematic and dynamic models of an ISP installed on a moving base. 
+In this section, a procedure for deriving the kinematic and dynamic models of an ISP installed on a moving base is presented. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Notations and Conventions}
 \label{sec:definitions}
 
-This section presents the notations and conventions used in this work. Let $\mathbb{N} = \{0,1,2,\dots\}$ denote the set of \textit{natural numbers} and define $\mathbb{\bar{N}} = \{ \bar{0}\,,\bar{1}\,, \bar{2}\,, \hdots \}$. Unless otherwise stated, $i, j, k \in \mathbb{N} \cup \mathbb{\bar{N}} \cup \{s,c\}$.
+Let $\mathbb{N} = \{0,1,2,\dots\}$ denote the set of \textit{natural numbers}.
+%and define $\mathbb{\bar{N}} = \{ \bar{0}\,,\bar{1}\,, \bar{2}\,, \hdots \}$.
+Unless otherwise stated, $i, j, k \in \mathbb{N} \cup \{s,c\}$.
 %
 %\begin{figure}[ht]
     %\centering
@@ -17,7 +19,7 @@ This section presents the notations and conventions used in this work. Let $\mat
     %\label{fig:HEADS_convention}
 %\end{figure}
 %
-Define the following:
+Define:
 % coordinate frames, matrices, vectors and scalars:
 %
 \begin{itemize}
@@ -49,7 +51,7 @@ Define the following:
 %\item $g_{ij} \in SE(3)$: homogeneous transformation matrix from frame $\mathbf{E}_j$ to frame $\mathbf{E}_i$;
 %%depending on $R_{ij}$ and on the position vector $p^i_{ij}$;
 %
-\item $h^{k}_{i} \in \mathbb{R}^{3}$: unit vector defining the rotation axis of joint $i$, represented in $\mathbf{E}_k$ ($i \in \mathbb{N}^*$);
+\item $h^{k}_{i} \in \mathbb{R}^{3}$: unit vector defining the rotation axis of joint $i$, represented in $\mathbf{E}_k$ ($i = 1,2,...$);
 %
 %\item $\omega_i \in \mathbb{R}^{3}$: angular velocity of body $i$ seen and represented in the inertial frame 					 $\mathbf{E}_0$ ($i \in \mathbb{N}_1 \cup \{b\}$). Mathematically, $\omega_i$ is defined as the twist coordinates of the $so(3)$ 			 Lie algebra as $\hat{\omega}_i = \dot{R}_i R^{T}_{i}$;
 
@@ -65,7 +67,7 @@ Define the following:
 %\item $\widehat{v}$: $\mathbb{R}^3 \rightarrow so(3)$ cross-product operator;
 \item $\mathbf{S}(v) : \mathbb{R}^3 \mapsto \mathrm{so}(3)$ cross product operator;
 %
-\item $\aket{v}^{\alpha}$: $\mathbb{R}^n \rightarrow \mathbb{R}^n$, where its elements are given by $\aketext{v_i}{\alpha}$, with $v_i \in \mathbb{R}$ ($i = 1,...,n$) being the elements of $v \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$;
+\item $\aket{v}^{\alpha}$: $\mathbb{R}^n \rightarrow \mathbb{R}^n$, where its elements are given by $\aketext{v_i}{\alpha}$, with $v_i \in \mathbb{R}$ being the elements of $v \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$;
 %
 \item $\mathbf{I}_{n} \in \mathbb{R}^{n \times n}$: identity matrix of dimension $n$.
 %
@@ -117,7 +119,7 @@ Let $R \in SO(3)$ be a \textit{rotation matrix} describing the rotation from an 
 %
 Then, $R$ is a diffeomorphism with respect to the projective space $\mathbb{RP}^{3} \!=\! \left\{ \norm{v}^2 \leq \pi \,\,|\,\, v \in \mathbb{R}^3 \right\}$.
 %the manifold composed of all points inside a rigid ball of radius $\pi$ centered on the origin of $\mathbb{R}^{3}$. 
-Therefore, each point $v \in \mathbb{RP}^{3}$ represent a $4$-parameter representation for $SO(3)$ called the \textit{angle-axis}, where the unitary vector on the direction of $v$ represents the rotation axis and $\norm{v}$ represents the corresponding rotation angle around that axis.
+Therefore, each point $v \in \mathbb{RP}^{3}$ is a $4$-parameter representation for $SO(3)$ called the \textit{angle-axis}, where the unitary vector on the direction of $v$ represents the rotation axis and $\norm{v}$ represents the corresponding rotation angle around that axis.
 %
 \begin{remark}
 Note that $\mathbb{RP}^{3}$ covers $SO(3)$ twice, since any point on it actually represents the same rotation than the opposite point of the sphere.
@@ -142,7 +144,7 @@ One can also represent the quaternion in fully vector form by the notation
 $\bar{Q} = [\,\, \eta \,\,\, \epsilon_{1} \,\,\, \epsilon_{2} \,\,\, \epsilon_{3} \,\,]^\mathsf{T} \in \mathbb{R}^4$.
 
 Quaternions also form an algebraic {\it group} with respect to {\it multiplication}.
-Given two quaternions $Q_1=\{\eta_1,\epsilon_1\}$ and $Q_2=\{\eta_2,\epsilon_2\}$, their multiplication follow the rules established by definition \eqref{eq:def_quaternion}, which results in:
+Given two quaternions $Q_1=\{\eta_1,\epsilon_1\}$ and $Q_2=\{\eta_2,\epsilon_2\}$, their multiplication follows the rules established by definition \eqref{eq:def_quaternion}, which results in:
 %
 \begin{align}
 Q_1\cdot Q_2 = \{\eta_1\eta_2 - \epsilon_1^\mathsf{T}\epsilon_2 ,\, \eta_1\epsilon_2 + \eta_2\epsilon_1 + \epsilon_1 \times \epsilon_2 \} \,.
@@ -152,8 +154,8 @@ Q_1\cdot Q_2 = \{\eta_1\eta_2 - \epsilon_1^\mathsf{T}\epsilon_2 ,\, \eta_1\epsil
 Quaternion multiplication can also be performed as a linear transformation in $\mathbb{R}^4$, by:
 %
 \begin{align}
-\overline{Q_1 \cdot Q_2} &= \mathbf{H}_+(Q_1) \, \overline{Q_2} \,, \\
-&= \mathbf{H}_-(Q_2) \, \overline{Q_1} \,,
+\overline{Q_1 \cdot Q_2} &= \mathbf{H}_+(Q_1) \, \bar{Q}_2 \,, \\
+&= \mathbf{H}_-(Q_2) \, \bar{Q}_1 \,,
 \label{eq:multipl_Hamilton}
 \end{align}
 %
@@ -183,7 +185,7 @@ where $\mathbf{H}_+$, $\mathbf{H}_-$ are {\it Hamilton operators} defined by:
 \label{eq:Hamilton_op}
 \end{align}
 
-The square of the quaternion \textit{norm} is defined as the \textit{scalar}:
+The square of the quaternion \textit{norm} is defined as the \textit{scalar}
 %
 \begin{align}
 \norm{Q}^2 = Q \cdot Q^* = \{ \eta^2 + \epsilon^\mathsf{T} \epsilon , 0 \} \,,
@@ -200,12 +202,11 @@ Q = \left\{cos\left(\frac{\theta}{2}\right) \,, sin\left(\frac{\theta}{2}\right)
 \label{eq:quaternion_rotation}
 \end{align}
 %
-The inverse of an unit quaternion is given by $Q^{-1} \!\!=\!\! Q^*$, 
-which according to \eqref{eq:quaternion_rotation}, clearly corresponds to the opposite rotation due to negative direction of the rotation axis $n$.
+The inverse of an unit quaternion is given by $Q^{-1} \!\!=\!\! Q^*$, which according to \eqref{eq:quaternion_rotation}, corresponds to the opposite rotation due to negative direction of the rotation axis $n$.
 
 Let $r_0, r_1, ... , r_n \in \mathbb{H}^*$ be the $n$ absolute rotations between frames $\mathbf{E}_0, \mathbf{E}_1, ..., \mathbf{E}_n$ and the world frame $\mathbf{E}_w$, and $r^i_{i+1} \in \mathbb{H}^*$ ($i=1,2,...,n-1$) represent the rotations from frame $\mathbf{E}_i$ to $\mathbf{E}_{i+1}$.
 %Note that $r^j_i = (r^i_j)^*$ represents the opposite rotation.
-Then, since the unit quaternions form a group with respect to multiplication, then:
+Since the unit quaternions form a group with respect to multiplication, then
 %
 \begin{align}
 r_n = r_1 \cdot r^1_2 \cdot ... \cdot r^{n-1}_n \in \mathbb{H}^* \,.
@@ -215,23 +216,23 @@ Now, define the set of \textit{pure} quaternions $\mathbb{H}_p = \{ v \in \mathb
 %
 Note that any vector from $\mathbb{R}_3$ can be represented as the vector part of a corresponding element $v \in \mathbb{H}_p$.
 %
-Besides, note that the following holds for $v,w \in \mathbb{H}_p$:
-\begin{align}
-%\overline{v \circ w} = \left[ \begin{array}{c}
-%-\mathsf{Im}(v)^\mathbf{T} \mathsf{Im}(w) \\ 
-%\mathsf{Im}(v) \times \mathsf{Im}(w)
-%\end{array} \right] \,.
+%Besides, note that the following holds for $v,w \in \mathbb{H}_p$:
+%\begin{align}
+%%\overline{v \circ w} = \left[ \begin{array}{c}
+%%-\mathsf{Im}(v)^\mathbf{T} \mathsf{Im}(w) \\ 
+%%\mathsf{Im}(v) \times \mathsf{Im}(w)
+%%\end{array} \right] \,.
+%%
+%v \cdot w = \{ -\mathsf{Im}(v)^\mathsf{T} \mathsf{Im}(w) ,\,\, \mathsf{Im}(v) \times \mathsf{Im}(w) \} \,.
+%%
+%%v \circ w = \{ -v^\mathbf{T} w ,\,\, v \times w \} \,.
+%\end{align}
+%%
+%%were here we interchange the quaternion and vector notation, since each one has a clear meaning in this case.
 %
-v \cdot w = \{ -\mathsf{Im}(v)^\mathsf{T} \mathsf{Im}(w) ,\,\, \mathsf{Im}(v) \times \mathsf{Im}(w) \} \,.
-%
-%v \circ w = \{ -v^\mathbf{T} w ,\,\, v \times w \} \,.
-\end{align}
-%
-%were here we interchange the quaternion and vector notation, since each one has a clear meaning in this case.
-
 Let $v^i$ and $v^j \!\in\! \mathbb{H}_p$ be representations for a vector $\vec{v}$ in frames $\mathbf{E}_i$ and $\mathbf{E}_j$, respectively, and $r^i_j$ represents the rotation from $\mathbf{E}_i$ to $\mathbf{E}_j$, with unitary axis $n^i_{j} \in \mathbb{R}^3$ and rotation angle $\theta_{ij}$.
 %
-Then, the following relation is valid:
+Then, the following relation holds:
 %
 \begin{align}
 v^i = (r^i_j) \cdot v^j \cdot (r^i_j)^* = Ad_{r^i_j} \left[ v^j \right] \,,
@@ -241,7 +242,7 @@ where $Ad_{r^i_j}[*]$ is the adjoint {\it operator}.
 %
 Note that, in vector algebra, $Ad_{r^i_j}$ represents the corresponding rotation matrix $R_{ij} \in SO(3)$ associated to the unit quaternion $r^i_j \in \mathbb{H}^*$.
 %
-In terms of the components of $r^i_j$, this matrix is given by:
+In terms of the components of $r^i_j$, this matrix is given by
 %
 \begin{align}
 R_{ij} = n^i_{j} (n^i_{j})^\mathsf{T} + s_{ij} \, \mathbf{S}(n^i_{j}) + c_{ij} \, (\mathbf{I}_3 - n^i_{j} (n^i_{j})^\mathsf{T}) \,,
@@ -254,7 +255,7 @@ The rotation matrix corresponding to an absolute rotation $r_i \in \mathbb{H}^*$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{algorithm}[Kinematic Propagation]
 The algorithm is initialized with the vessel configuration $p_{00} \in \mathbb{R}^3$ and $r_0 \in \mathbb{H}^*$. 
-Then, varying index $i$ from $0$ to $n-1$, the configuration of each frame with respect to the vessel frame $\mathbf{E}_0$ can be computed by:
+Then, varying index $i$ from $0$ to $n-1$, the configuration of each frame with respect to the vessel frame $\mathbf{E}_0$ can be computed by
 %
 %\begin{align}
 %p_{0,i+1} &= p_{0,i} + Ad_{r_i} \left[\, p^i_{i,i+1} \,\right] \,, \\
@@ -265,7 +266,7 @@ Then, varying index $i$ from $0$ to $n-1$, the configuration of each frame with 
 %
 \begin{align}
 p_{0,i+1} &= p_{0,i} + R_{i} \, p^i_{i,i+1} \,, \\
-\overline{r}_{i+1} &= \mathbf{H}_+(r_i) \, \overline{r}^i_{i+1} \,.
+\overline{r}_{i+1} &= \mathbf{H}_+(r_i) \, \overline{r}^i_{i+1} \,,
 \end{align}
 %
 with $R_i$ computed from $r_i$ in \eqref{eq:quaternion_rotation_matrix}.
@@ -298,7 +299,7 @@ $v^{i}_{i}\in\mathbb{R}^{3}$ and $\omega^{i}_{i}\in\mathbb{R}^{3}$ when written 
 %
 Let $r_i = \{\eta_i,\epsilon_i\}\in\mathbb{H}^*$ be the absolute rotation of $\mathbf{E}_i$. 
 %In the same way that $\widehat{\omega}^i_{0i} = R^\mathsf{T}_{0i}\,\dot{R}_{0i}\in so(3)$ is the \textit{Lie algebra} of $SO(3)$
-The time-derivative of $r_i$ can be related to $\omega^i_{i}$ by:
+The time-derivative of $r_i$ can be related to $\omega^i_{i}$ by
 %
 \begin{align}
 \dot{\overline{r}}_i = 
@@ -316,7 +317,7 @@ The time-derivative of $r_i$ can be related to $\omega^i_{i}$ by:
 \label{eq:quaternion_propagation}
 \end{align}
 %
-which is known as the \textit{quaternion propagation} formula.
+which is known as the \textit{quaternion propagation} formula \cite{adorno2017}.
 
 The vector $V^{i}_{i} = [\, (v^{i}_{i})^\mathsf{T} \,\,\, (\omega^{i}_{i})^\mathsf{T} \,]^\mathsf{T} \in \mathbb{R}^{6}$ is the \textit{body velocity twist} associated to $\mathbf{E}_{i}$.
 %
@@ -330,7 +331,7 @@ Ad_{g_{ij}} =
 \left[\begin{array}{cc}
 R_{ij} & \hat{p}^{i}_{ij} \, R_{ij} \\
   0    &             R_{ij}
-\end{array}\right] \,.
+\end{array}\right] \,,
 \label{eq:adjoint_map}
 \end{equation}
 %
@@ -404,7 +405,7 @@ The velocity/acceleration twists of the camera are computed by $V^c_{c} = Ad_{g_
 %\label{eq:downwards_prop2}
 %\end{flalign}
 %
-The matrices in \eqref{eq:upwards_prop1}, \eqref{eq:upwards_prop2} are given by:
+The matrices in \eqref{eq:upwards_prop1}, \eqref{eq:upwards_prop2} are given by
 %
 \begin{alignat*}{3}
 &\Phi_{i+1,i} &=& \mat{
@@ -492,7 +493,7 @@ and can be expressed in terms of $q\,,\dot{q}\in\mathbb{R}^{3}$ by means of the 
 %
 where $\Pi_g$ is the vector of {\it geometric} parameters of the ISP, containing combinations of components of the axes and distance vectors of each link frame.
 %
-Note that the body link Jacobian $J^i_{0i}(q,\Pi_g)$ can be computed numerically from \eqref{eq:upwards_prop1},
+Note that the body link Jacobian $J^i_{0i}(q,\Pi_g)$ can be computed numerically from \eqref{eq:upwards_prop1} by initializing the algorithm with $V^0_0 = 0$ and propagating three times using $q_i = [\,1 \,\, 0 \,\, 0\,]^\mathsf{T}$, $q_i = [\,0 \,\, 1 \,\, 0\,]^\mathsf{T}$ and $q_i = [\, 0 \,\, 0 \,\, 1 \,]^\mathsf{T}$ to compute each column of $J^i_{0i}$.
 %
 %\begin{align}
 %J^i_{bi}(q) = \mat{
@@ -504,10 +505,9 @@ Note that the body link Jacobian $J^i_{0i}(q,\Pi_g)$ can be computed numerically
 %
 %can be used to compute the angular body Jacobian $J^k_{bk}\in \mathbb{R}^{3\times 3}$. Iterating \eqref{eq:upwards_prop1} from $i=0$ till $i=k$ will result in the structure shown in \eqref{eq:link_body_jacobian}.
 %
-and also that the last $3-i$ columns of $J^i_{0i}$ are null, since the velocity of link $i$ only depends on the previous joints. 
+%and also that the last $3-i$ columns of $J^i_{0i}$ are null, since the velocity of link $i$ only depends on the previous joints. 
 
-These kinematic relations can be used to describe the dependance among vehicle, ISP and camera motion by applying the group operation of $\mathbb{H}^*$, equation
-\eqref{eq:gen_vel_transform1} and its time-derivative, with $\mathbf{E}_i = \mathbf{E}_c$:
+These kinematic relations can be used to describe the dependance among vehicle, ISP and camera motion by applying the group operation of $\mathbb{H}^*$, equation \eqref{eq:gen_vel_transform1} and its time-derivative, with $\mathbf{E}_i = \mathbf{E}_c$, yielding
 %
 \begin{align}
 r_{c} &= r_{0} \circ r^0_{c}(q,\Pi_g) \,, \label{eq:camera_orientation1} \\
@@ -515,7 +515,7 @@ r_{c} &= r_{0} \circ r^0_{c}(q,\Pi_g) \,, \label{eq:camera_orientation1} \\
 \dot{\omega}^{c}_{c} &= J^{c}_{0c}(q,\Pi_g) \, \ddot{q} + \dot{J}^{c}_{0c}(q,\dot{q},\Pi_g) \, \dot{q} + \dot{\omega}^{c}_{0} \,. \label{eq:camera_orientation3}
 \end{align}
 
-An important algebraic property is the \textit{linearity} of \eqref{eq:camera_orientation2} with respect to the \textit{geometric} parameters:
+An important algebraic property is the \textit{linearity} of \eqref{eq:camera_orientation2} with respect to the \textit{geometric} parameters \cite{Siciliano2009}:
 %
 \begin{equation}
 \omega^{c}_{c} = W_\omega(q,\dot{q},\omega^{c}_{0}) \, \Pi_{g} \,.
@@ -529,12 +529,12 @@ where $W_\omega \in \mathbb{R}^{3\times N_g}$ is a \textit{kinematic regressor}.
 \subsection{Dynamic Equations for Vehicle Manipulator Systems}
 \label{sec:NE_algorithm}
 
-In \cite{Gravdahl2014}, it is shown that the equations of motion for a VMS with respect to the vehicle CG frame $\mathbf{E}_{b}$ can be written as:
+In \cite{Gravdahl2014}, it is shown that the equations of motion for a VMS with respect to the vehicle frame $\mathbf{E}_{0}$ can be written as:
 %
 %However, the system dynamics can also be written w.r.t the INS variables by using \eqref{eq:adjoint_map} and its time derivative for $i = b$ and $j = s$, yielding:
 %
 \begin{equation}
-M_{qq}\,\ddot{q} + C_{qq}\,\dot{q} + G_{q} + M_{qV}\,\dot{V}^{0}_{0} + C^{b}_{qV}\,V^{0}_{0} = \tau_q \,,
+M_{qq}\,\ddot{q} + C_{qq}\,\dot{q} + G_{q} + M_{qV}\,\dot{V}^{0}_{0} + C_{qV}\,V^{0}_{0} = \tau_q \,,
 \label{eq:HEADS_dynamics}
 \end{equation}
 %
@@ -547,7 +547,7 @@ $C_{qq}(q,\dot{q},V^{0}_{0},\Pi_g,\Pi_d) \in \mathbb{R}^{3 \times 3}$ and $C_{qV
 %due to joint motions and frame $\mathbf{E}_{k}$ motion, 
 and $G_{q}(q,r_{0},\Pi_g,\Pi_d) \in \mathbb{R}^{3}$ is the gravity vector.
 
-It is worth mentioning that, in a similar way than in \eqref{eq:kin_regressor}, \eqref{eq:HEADS_dynamics} is also \textit{linear} with respect to the \textit{dynamic} parameters:
+It is worth mentioning that, in a similar way than in \eqref{eq:kin_regressor}, \eqref{eq:HEADS_dynamics} is also \textit{linear} with respect to the \textit{dynamic} parameters \cite{Siciliano2009}:
 %
 \begin{equation}
 Y_q( q,\dot{q}, \ddot{q}, r_{0}, V^{0}_{0}, \dot{V}^{0}_{0}, g, \Pi_g) \, \Pi_{d} = \tau_q \,,
@@ -556,11 +556,11 @@ Y_q( q,\dot{q}, \ddot{q}, r_{0}, V^{0}_{0}, \dot{V}^{0}_{0}, g, \Pi_g) \, \Pi_{d
 %
 where $Y_q \in \mathbb{R}^{3\times N_d}$ is a \textit{dynamic regressor}.
 
-It is well known that the \textit{Newton Euler} method is a computationally efficient algorithm that can be used to numerically solve the \textit{inverse dynamics} problem for \eqref{eq:HEADS_dynamics}.
+The \textit{Newton Euler} method is a computationally efficient algorithm that can be used to numerically solve the \textit{inverse dynamics} problem for \eqref{eq:HEADS_dynamics} \cite{Siciliano2009}.
 %
 %That is, it expresses the joint torques in \eqref{eq:HEADS_lagrange_dynamics_indirect} as functions of the robot motion and of frame $\mathbf{E}_{k}$ motion.
 %
-Given $q$, $\dot{q}$, $\ddot{q}$, $r_{0}$, $V^{0}_{0}$, $\dot{V}^{0}_{0}$ and $g \in \mathbb{R}$, the \textit{Newton-Euler} algorithm for the inverse dynamics is expressed by:
+Given $q$, $\dot{q}$, $\ddot{q}$, $r_{0}$, $V^{0}_{0}$, $\dot{V}^{0}_{0}$ and $g \in \mathbb{R}$, the \textit{Newton-Euler} algorithm for the inverse dynamics is expressed by
 %
 \begin{equation}
 \tau_q = \, NE( q, \dot{q}, \ddot{q}, r_{0}, V^{0}_{0}, \dot{V}^{0}_{0}, g, \Pi ) \,,
@@ -576,7 +576,7 @@ where $\Pi^\mathsf{T} = \left[\!\!\begin{array}{cc} \Pi^\mathsf{T}_{g} & \Pi^\ma
 
 %The algorithm can be employed, for example, to design control laws based on computed torque using nominal parameters $\widehat{\Pi}$, and also to solve the \textit{forward dynamics} problem of \eqref{eq:HEADS_lagrange_dynamics_indirect} using the real parameters $\Pi$ for system simulation.
 
-The Newton-Euler algorithm is composed of two steps. The first one is the \textit{propagation of velocities and accelerations} upwards the kinematic chain, summarized in \algref{alg:forward_propagation}. The second one consists in solving the dynamic equations of motion for each rigid body in the system, starting from the $n$-th link and ending up on $\mathbf{E}_b$. 
+The Newton-Euler algorithm is composed of two steps. The first one is the \textit{propagation of velocities and accelerations} upwards the kinematic chain, summarized in \algref{alg:forward_propagation}. The second one consists in solving the dynamic equations of motion for each rigid body in the system, starting from the $n$-th link and ending up on $\mathbf{E}_0$. 
 
 %For the particular application of this work, only the case of rotational joints is considered.
 

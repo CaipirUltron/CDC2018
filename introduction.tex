@@ -11,27 +11,27 @@
 % contribuitions: (i) use of STC cascade strategy to schieve both stabilization AND tracking;
 % (ii) HOSMO for output feedback stabilization
 
-Line-of-sight (LOS) stabilization is a common and challenging problem in the control literature. Inertially stabilized platforms (ISP) are widely used for payload stabilization and tracking applications, when a sensor must accurately point to a target in a dynamic environment.
+Line-of-sight (LOS) stabilization is a challenging problem. Inertially stabilized platforms (ISP) are widely used for payload stabilization and tracking applications, when a sensor must accurately point to a target in a dynamic environment.
 %
 Some examples are cameras for aerial surveying and entertainment industry \cite{Hurak2009}, long-range sensors on vehicles \cite{Debruin2008}, military applications \cite{Kazemy2007} and thermal cameras for oil spill detection \cite{skjelten2011ship}.
 
 %%% Direct VS Indirect Stabilization %%%
-ISPs are usually gimbaled structures mounted on a mobile base (vehicle) with motors equipped with encoders/tachometers and a payload fixed on the last gimbal. Gyroscopes or inertial navigation systems (INS) are employed to close the control loop by either measuring the vehicle motion (\textit{indirect stabilization}) or directly measuring the payload motion (\textit{direct stabilization}) \cite{Kennedy2003}.
-
+ISPs are gimbaled structures, usually mounted on a mobile base (vehicle), driven by motors equipped with encoders/tachometers and a payload fixed on the last gimbal. Gyroscopes or inertial navigation systems (INS) are employed in the control loop by either measuring the vehicle motion (\textit{indirect stabilization}) or directly measuring the payload motion (\textit{direct stabilization}) \cite{Kennedy2003}.
+%
 The latter is usually recommended for precision pointing applications, since the sensor location is appropriate for capturing other effects that can impact the measured angular rates, such as structure flexibility, resolvers, tachometer and/or encoder accuracy and processor sampling rate \cite{Kennedy2003}. 
 %
-A possible drawback of this method is the larger size of the gimbals required for opposing the larger payload induced by the weight of the sensors in the inner gimbal.
+A possible drawback of this method is the larger size of the gimbals required to support the larger payload induced by the weight of the sensors in the inner gimbal.
 %
-This drawback is usually absent in the indirect method, but since the disturbances are not measured in the LOS coordinate frame, control performance can be degraded.
+This drawback is usually absent in the indirect method, but since the disturbances are not measured in the LOS coordinate frame, the control performance can be degraded.
 
 %Typical model
-It is common to find simple dynamic models describing this type of system in the literature. Usually, the joints are considered as decoupled and a double integrator with an inertia gain relates the joint 
+Simple dynamic models describing this type of system are common in the literature. Usually, the joints are considered as decoupled and a double integrator model with an inertia gain relates the joint 
 torque and position.
 %
 Unmodeled dynamics, such as the vehicle motion and cross-coupling effects, are treated as disturbances to be rejected.
 
 %Typical control
-The typical control topology is P-PI control. Usually, the inner PI velocity loop has a high bandwidth to stabilize the payload, attenuating the torque disturbances. The outer proportional orientation loop operates at a lower bandwidth and minimizes the pointing error \cite{Hilkert2008, Masten2008, Kennedy2014}.
+The typical control topology is P-PI control. Usually, the inner PI velocity loop has a high bandwidth to stabilize the payload and attenuate the torque disturbances. The outer proportional orientation loop operates at a lower bandwidth and minimizes the pointing error \cite{Hilkert2008, Masten2008, Kennedy2014}.
 %
 However, in \textit{high accuracy} and/or \textit{fast dynamics} applications, unmodeled effects may add significant torque contributions, and simple linear controllers may not suffice for the required level of performance.
 %
@@ -43,11 +43,9 @@ Some works have tackled the problem of LOS control for ISPs in a more detailed w
 %
 In \cite{Abdo2013}, the effects of kinematic coupling of the base and gimbal imbalance are analyzed for a $2$-DOF ISP, while \cite{Abdo2014} proposes a self-tunning PID-type fuzzy controller as an alternative to PID control used in the ISP internal stabilization loop.
 %
-Recently, \cite{Cabarbaye2017} developed an alternate adaptive control for an inertially stabilized payload with unknown inertia matrix, using the unit quaternion formalism and quaternion/angular velocity errors.
+%Recently, \cite{Cabarbaye2017} developed an alternate adaptive control for an inertially stabilized payload with unknown inertia matrix, using the unit quaternion formalism and quaternion/angular velocity errors.
 %
-In \cite{Konigseder2017}, unit quaternions are again used for attitude stabilization. 
-%
-Control is performed by means of a feedback linearization technique, taking partial advantage of the ISP Lagrangian model.
+Recently, \cite{Konigseder2017} used the unit quaternion formalism for attitude stabilization, proposing a control method based in feedback linearization that takes partial advantage of the ISP Lagrangian model.
 %
 In \cite{Reis2018}, it is shown that even in the presence of large parameter uncertainties, a computed-torque plus PID (CTPID) controller guarantees satisfactory performance.
 
@@ -56,7 +54,9 @@ Modern techniques using Sliding Mode Control (SMC) are being applied for ISP sta
 %
 Their attractive characteristics include: (i) exact rejection of bounded matched disturbances; (ii) finite-time convergence and (iii) ease of implementation.
 %
-For example, in \cite{Mao2017}, a Non-singular Terminal Sliding Mode controller \cite{Feng2002} is used to achieve finite-time stabilization of an ISP in the presence of bounded matched disturbances affecting its electromechanical system and output feedback only, using High-Order Sliding Mode (HOSM) observers for the estimation of the system states.
+For example, in \cite{Mao2017}, a Non-singular Terminal Sliding Mode controller \cite{Feng2002} is used to achieve finite-time stabilization of an ISP in the presence of bounded matched disturbances affecting its electromechanical system.
+%
+To avoid measuring the system state, High-Order Sliding Mode (HOSM) observers are employed.
 %
 %However, the ISP tracking problem is not tackled.
 
@@ -65,4 +65,4 @@ In this work, a novel cascade control strategy based on the super-twisting algor
 %
 Two cases are considered: (i) full state feedback, where the ISP joint angles and velocities are measured and (ii) output feedback, where the ISP joint velocities are estimated using an observer based on higher-order sliding mode (HOSM) theory.
 %
-Stability analysis of the proposed control schemes is performed, and numerical simulations using Matlab show the efficiency and performance of the proposed control schemes.
+Stability analysis is performed, and numerical simulations show the efficiency and performance of the proposed control schemes.
